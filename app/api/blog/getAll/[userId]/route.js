@@ -5,6 +5,10 @@ import Comment from "../../../../../models/comment.js"
 
 export const GET = async (req,{params}) => {
     const {userId} = await params;
+
+    if(!userId) {
+        return new Response("User Id is required", {status:400})
+    }
     try {
         await connectToDb()
         const blogs = await Blog.find()
