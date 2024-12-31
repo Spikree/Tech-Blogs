@@ -2,19 +2,33 @@ import {connectToDb} from "../../../../../utils/database.js"
 import Blog from "../../../../../models/blog.js"
 import Like from "../../../../../models/likes.js"
 import Comment from "../../../../../models/comment.js"
+import User from "../../../../../models/user.js"
 
-export const GET = async (req,{params}) => {
+export const GET = async (req, {params}) => {
     const {userId} = await params;
 
     if(!userId) {
-        return new Response("User Id is required", {status:400})
+        return new Response("User Id is required", {status: 400})
     }
+
     try {
         await connectToDb()
         const blogs = await Blog.find()
-        if(!blogs) {
-            return new Response("Blogs not found",{status:200})
+
+        if(!blogs || blogs.length === 0) {
+            return new Response("No blogs found", {status: 200})
         }
+
+        const userIds = [...new Set(blogs.map(blog => blog.user.toString()))]
+
+        const users = await User.find(
+            { _id: { $in: userIds } },
+            { image: 1 } 
+        )
+
+        const userImageMap = new Map(
+            users.map(user => [user._id.toString(), user.image])
+        )
 
         const userLikes = await Like.find({
             user: userId,
@@ -23,31 +37,29 @@ export const GET = async (req,{params}) => {
 
         const likedBlogIds = new Set(userLikes.map(like => like.blog.toString()))
 
-        const likeCounts = await Promise.all(
-            blogs.map(blog => 
+        const [likeCounts, commentCounts] = await Promise.all([
+            Promise.all(blogs.map(blog => 
                 Like.countDocuments({blog: blog._id})
-            )
-        )
-
-        const commentCounts = await Promise.all(
-            blogs.map(blog =>
+            )),
+            Promise.all(blogs.map(blog =>
                 Comment.countDocuments({blog: blog._id})
-            )
-        )
+            ))
+        ]);
 
         const blogsWithDetails = blogs.map((blog, index) => {
             const blogObj = blog.toObject();
-            return{
+            return {
                 ...blogObj,
+                userImage: userImageMap.get(blog.user.toString()), 
                 hasLiked: likedBlogIds.has(blog._id.toString()),
-                totalLikes : likeCounts[index],
+                totalLikes: likeCounts[index],
                 totalComments: commentCounts[index]
             }
-        })
+        });
 
-        return new Response(JSON.stringify(blogsWithDetails),{status:200})
+        return new Response(JSON.stringify(blogsWithDetails), {status: 200})
     } catch (error) {
         console.log(error)
-        return new Response("Error fetching blogs", {status:500})
+        return new Response("Error fetching blogs", {status: 500})
     }
 }
