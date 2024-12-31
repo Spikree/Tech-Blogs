@@ -12,6 +12,7 @@ type Blog = {
   user: string;
   _id: string;
   hasLiked: boolean;
+  userImage: string
   totalLikes: number;
   totalComments: number;
 };

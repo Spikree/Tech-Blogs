@@ -1,6 +1,7 @@
-import React from 'react'
-import { Card } from '../ui/card';
-import { Heart, MessageCircle } from 'lucide-react';
+import React from "react";
+import { Card } from "../ui/card";
+import { Heart, MessageCircle } from "lucide-react";
+import Image from "next/image";
 
 type Props = {
   blog: {
@@ -10,13 +11,13 @@ type Props = {
     user: string;
     _id: string;
     hasLiked: boolean;
+    userImage: string;
     totalLikes: number;
     totalComments: number;
   };
-}
+};
 
-const BlogCard = ({blog}: Props) => {
-
+const BlogCard = ({ blog }: Props) => {
   const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
     year: "numeric",
     month: "long",
@@ -24,16 +25,33 @@ const BlogCard = ({blog}: Props) => {
   });
 
   return (
-    <Card className='p-5 w-80'>
-      <div className='flex flex-col gap-4 '>
-        <div className='max-h-max'>
-        <h1 className='text-2xl font-bold'>{blog.title}</h1>
-        <span className='text-sm text-gray-500'>{formattedDate}</span>
+    <Card className="p-5 w-80">
+      <div className="flex flex-col gap-4 ">
+        <div className="max-h-max">
+          <div className="flex justify-between">
+            <h1 className="text-2xl font-bold">{blog.title}</h1>
+            <Image
+              src={blog.userImage}
+              width={30}
+              height={30}
+              alt="Picture of the author"
+              className="rounded-full aspect-square object-cover"
+            />
+          </div>
+          <span className="text-sm text-gray-500">{formattedDate}</span>
         </div>
-        <p>{blog.content.length > 200 ? `${blog.content.slice(0, 200)}...` : blog.content}</p>
+        <p>
+          {blog.content.length > 200
+            ? `${blog.content.slice(0, 200)}...`
+            : blog.content}
+        </p>
         <div className="flex gap-3 mt-auto">
           <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer">
-            <Heart className={blog.hasLiked ? "w-4 h-4 text-red-600 fill-red-600": "w-4 h-4"} />
+            <Heart
+              className={
+                blog.hasLiked ? "w-4 h-4 text-red-600 fill-red-600" : "w-4 h-4"
+              }
+            />
             <span>{blog.totalLikes}</span>
           </Card>
           <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
@@ -43,7 +61,7 @@ const BlogCard = ({blog}: Props) => {
         </div>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default BlogCard
+export default BlogCard;
