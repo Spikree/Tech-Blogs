@@ -9,7 +9,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const { data: session } = useSession();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -37,7 +37,6 @@ const page = () => {
         description: `${year} ${month}`,
       });
 
-      console.log(response);
     } catch (error) {
       toast({
         title: error.response.data,
@@ -80,4 +79,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -1,8 +1,20 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+"use client";
+
+import {
+  Calendar,
+  Home,
+  Inbox,
+  Link,
+  LogOut,
+  Search,
+  Settings,
+} from "lucide-react";
+import { signOut } from "next-auth/react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "../ui/button";
 
 const items = [
   {
@@ -24,7 +37,7 @@ const items = [
   },
   {
     title: "Your Blogs",
-    url: "",
+    url: "/yourBlogs",
     icon: Calendar,
   },
 ];
@@ -51,6 +64,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <Button
+          onClick={() => {
+            signOut({
+              callbackUrl: "/",
+              redirect: true,
+            });
+          }}
+        >
+          SignOut
+          <LogOut />
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 }
