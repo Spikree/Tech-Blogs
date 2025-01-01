@@ -15,9 +15,10 @@ type Props = {
     totalLikes: number;
     totalComments: number;
   };
+  userName: string;
 };
 
-const BlogCard = ({ blog }: Props) => {
+const BlogCard = ({ blog,userName }: Props) => {
   const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
     year: "numeric",
     month: "long",
@@ -25,11 +26,12 @@ const BlogCard = ({ blog }: Props) => {
   });
 
   return (
-    <Card className="p-5 w-80">
+    <Card className="p-5 w-96">
       <div className="flex flex-col gap-4 ">
         <div className="max-h-max">
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold">{blog.title}</h1>
+            <div className="w-20 h-20 p-3">
             <Image
               src={blog.userImage}
               width={30}
@@ -37,7 +39,9 @@ const BlogCard = ({ blog }: Props) => {
               alt="Picture of the author"
               className="rounded-full aspect-square object-cover"
             />
+            </div>
           </div>
+          <p className="text-gray-500">{userName}</p>
           <span className="text-sm text-gray-500">{formattedDate}</span>
         </div>
         <p>

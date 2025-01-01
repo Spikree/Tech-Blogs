@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
 import Provider from "@/components/shared/Provider";
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider>
-      <body>{children}</body>
+      <body>{children} <Toaster/></body>
       </Provider>
       
     </html>
