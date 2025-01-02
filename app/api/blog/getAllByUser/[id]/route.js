@@ -2,6 +2,7 @@ import {connectToDb} from "../../../../../utils/database.js"
 import Blog from "../../../../../models/blog.js"
 import Like from "../../../../../models/likes.js"
 import Comment from "../../../../../models/comment.js"
+import User from "@/models/user.js"
 
 export const GET = async(req, {params}) => {
     const {id} = await params;
@@ -14,6 +15,17 @@ export const GET = async(req, {params}) => {
         if(!blog) {
             return new Response("User Blogs not found")
         }
+
+        const userIds = [...new Set(blog.map(blog => blog.user.toString()))]
+
+        const users = await User.find(
+            { _id: { $in: userIds } },
+            { image: 1 } 
+        )
+
+        const userImageMap = new Map(
+            users.map(user => [user._id.toString(), user.image])
+        )
 
         const userLikes = await Like.find({
             user: id,
@@ -34,6 +46,7 @@ export const GET = async(req, {params}) => {
             const blogObj = blog.toObject();
             return{
                 ...blogObj,
+                userImage: userImageMap.get(blog.user.toString()),
                 hasLiked: likedBlogsIds.has(blog._id.toString()),
                 totalLikes: likeCounts[index],
                 totalComments: commentCounts[index],
