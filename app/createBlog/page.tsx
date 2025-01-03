@@ -16,7 +16,7 @@ const Page = () => {
   const { toast } = useToast();
 
   const now: Date = new Date();
-  const year: string = now.getFullYear();
+  const year: number = now.getFullYear();
 
   const month = String(now.getMonth() + 1).padStart(2, "0");
 
@@ -38,8 +38,9 @@ const Page = () => {
       });
 
     } catch (error) {
+      console.log(error)
       toast({
-        title: error.response.data,
+        title: "error creating blog",
         variant: "destructive"
       })
     }
