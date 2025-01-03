@@ -9,7 +9,9 @@ import {
   Search,
   Settings,
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
+import Image from "next/image";
 
 import {
   Sidebar,
@@ -43,6 +45,8 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { data: session } = useSession();
+  const image: string = session?.user?.image;
   return (
     <Sidebar>
       <SidebarContent>
@@ -65,6 +69,20 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <div className="flex gap-4 px-4 items-center text-center align-middle">
+          {image ? (
+            <Image
+              src={image}
+              width={30}
+              height={30}
+              alt="Picture of the author"
+              className="rounded-full aspect-square object-cover"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gray-300 rounded-full" />
+          )}
+          <p>{session?.user?.name}</p>
+        </div>
         <Button
           onClick={() => {
             signOut({

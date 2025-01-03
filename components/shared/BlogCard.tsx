@@ -19,6 +19,9 @@ type Props = {
   userName: string;
   setShowDeleteModal: (value: boolean) => void;
   setDeleteId: (value: string) => void;
+  setShowEditModal: (value: string) => void;
+  setEditId: (value: string) => void;
+  getSingleBlog: (value: object) => void;
 };
 
 const BlogCard = ({
@@ -26,6 +29,9 @@ const BlogCard = ({
   userName,
   setShowDeleteModal,
   setDeleteId,
+  setShowEditModal,
+  setEditId,
+  getSingleBlog
 }: Props) => {
   const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
     year: "numeric",
@@ -33,6 +39,8 @@ const BlogCard = ({
     day: "numeric",
   });
   const pathname = usePathname();
+
+  const image : string = blog.userImage
 
   return (
     <Card className="p-5 w-96">
@@ -42,7 +50,7 @@ const BlogCard = ({
             <h1 className="text-2xl font-bold">{blog.title}</h1>
             <div className="w-20 h-20 p-3">
               <Image
-                src={blog.userImage}
+                src={image}
                 width={30}
                 height={30}
                 alt="Picture of the author"
@@ -93,7 +101,7 @@ const BlogCard = ({
                   }
                 />
               </Card>
-              <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
+              <Card  onClick={() => {setShowEditModal(prev => !prev); setEditId(blog._id); getSingleBlog(blog._id)}} className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
                 <Pencil className="w-4 h-4" />
               </Card>
             </div>

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BlogCard from "@/components/shared/BlogCard";
+import { useToast } from "@/hooks/use-toast";
 
 type Blog = {
   title: string;
@@ -21,13 +22,21 @@ const Page = () => {
   const { data: session, status } = useSession();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const userName = session?.user?.name
+  const {toast} = useToast()
 
   const getAllBlogs = async (userId: string) => {
     try {
       const response = await axios.get(`/api/blog/getAll/${userId}`);
       setBlogs(response.data);
-      console.log(response.data)
+      toast({
+        title: "Fetched all blogs sucessfully"
+      })
+      // console.log(response.data)
     } catch (error) {
+      toast({
+        title: "Error fetching all the blogs",
+        variant: "destructive"
+      })
       console.error(error);
     }
   };
