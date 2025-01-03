@@ -20,7 +20,7 @@ const Page = () => {
 
   const month = String(now.getMonth() + 1).padStart(2, "0");
 
-  const createBlog = async (e) => {
+  const createBlog = async (e : React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post("/api/blog/new", {
