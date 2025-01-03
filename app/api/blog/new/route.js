@@ -17,6 +17,6 @@ export const POST = async (req) => {
         return new Response(JSON.stringify({newBlog, message: "Blog uploaded sucessfully"}), {status:201})
     } catch (error) {
         console.log(error)
-        return new Error("Failed to upload the blog",{status:5})
+        return new Response("Failed to upload the blog",{status:500})
     }
 }
