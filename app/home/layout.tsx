@@ -7,12 +7,13 @@ type Props = React.PropsWithChildren<{}>;
 const conversationsLayout = ({ children }: Props) => {
   return (
     <>
-      <SidebarProvider>
+      <SidebarProvider className="flex flex-col">
         <AppSidebar />
-        <Card>
+
+        <Card className="p-4 mt-5 mx-5 flex items-center">
           <SidebarTrigger className="block sm:hidden" />
         </Card>
-        
+
         {children}
       </SidebarProvider>
     </>

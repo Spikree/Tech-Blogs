@@ -52,7 +52,7 @@ const Page = () => {
           createBlog(e);
         }}
       >
-        <Card className="p-10 flex flex-col gap-3 w-96 sm:w-600 mx-8">
+        <Card className="sm:p-10 p-5 flex flex-col gap-3 w-80 sm:w-600 mx-8">
           <label className="text-gray-700">Blog Title</label>
           <Input
             value={title}
