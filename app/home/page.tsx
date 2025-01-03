@@ -28,9 +28,6 @@ const Page = () => {
     try {
       const response = await axios.get(`/api/blog/getAll/${userId}`);
       setBlogs(response.data);
-      toast({
-        title: "Fetched all blogs sucessfully"
-      })
       // console.log(response.data)
     } catch (error) {
       toast({
@@ -40,6 +37,18 @@ const Page = () => {
       console.error(error);
     }
   };
+
+  const likeBlogs = async (blogId : string, userId : string) => {
+    try {
+      const response = await axios.put(`/api/blog/like/${blogId}/${userId}`)
+      getAllBlogs(session.user.id);
+      toast({
+        title: response.data.message
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
@@ -52,7 +61,7 @@ const Page = () => {
       {blogs.length > 0 ? (
         <div className="flex flex-wrap gap-6 justify-center items-center">
           {blogs.map((blog) => (
-            <BlogCard key={blog._id} blog={blog} userName={userName} />
+            <BlogCard likeBlogs={likeBlogs} key={blog._id} blog={blog} userName={userName} />
           ))}
         </div>
       ) : (

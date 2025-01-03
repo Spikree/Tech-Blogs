@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getProviders, useSession, signIn, signOut } from "next-auth/react";
+import { getProviders, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 type Provider = {
@@ -12,7 +12,6 @@ type Provider = {
   type: string;
   signinUrl: string;
   callbackUrl: string;
-  [key: string]: any;
 };
 
 export default function Home() {

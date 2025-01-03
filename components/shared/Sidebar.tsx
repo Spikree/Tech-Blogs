@@ -4,10 +4,7 @@ import {
   Calendar,
   Home,
   Inbox,
-  Link,
   LogOut,
-  Search,
-  Settings,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 

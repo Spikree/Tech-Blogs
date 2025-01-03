@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Card } from "../ui/card";
 import { Heart, MessageCircle, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {
   blog: {
@@ -21,7 +22,8 @@ type Props = {
   setDeleteId: (value: string) => void;
   setShowEditModal: (value: string) => void;
   setEditId: (value: string) => void;
-  getSingleBlog: (value: object) => void;
+  getSingleBlog: (value: string) => void;
+  likeBlogs: (blogId: string, userId: string) => void;
 };
 
 const BlogCard = ({
@@ -31,8 +33,10 @@ const BlogCard = ({
   setDeleteId,
   setShowEditModal,
   setEditId,
-  getSingleBlog
+  getSingleBlog,
+  likeBlogs,
 }: Props) => {
+  const { data: session } = useSession();
   const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
     year: "numeric",
     month: "long",
@@ -40,7 +44,7 @@ const BlogCard = ({
   });
   const pathname = usePathname();
 
-  const image : string = blog.userImage
+  const image: string = blog.userImage;
 
   return (
     <Card className="p-5 w-96">
@@ -68,7 +72,12 @@ const BlogCard = ({
         </p>
         <div className="flex justify-between">
           <div className="flex gap-3 mt-auto">
-            <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer">
+            <Card
+              onClick={() => {
+                likeBlogs(blog._id, session?.user?.id);
+              }}
+              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
+            >
               <Heart
                 className={
                   blog.hasLiked
@@ -93,15 +102,16 @@ const BlogCard = ({
                 }}
                 className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
               >
-                <Trash
-                  className={
-                    blog.hasLiked
-                      ? "w-4 h-4 text-red-600 fill-red-600"
-                      : "w-4 h-4"
-                  }
-                />
+                <Trash className="w-4 h-4 " />
               </Card>
-              <Card  onClick={() => {setShowEditModal(prev => !prev); setEditId(blog._id); getSingleBlog(blog._id)}} className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
+              <Card
+                onClick={() => {
+                  setShowEditModal((prev) => !prev);
+                  setEditId(blog._id);
+                  getSingleBlog(blog._id);
+                }}
+                className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
+              >
                 <Pencil className="w-4 h-4" />
               </Card>
             </div>

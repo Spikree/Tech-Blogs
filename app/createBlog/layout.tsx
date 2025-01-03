@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/Sidebar";
 import { Card } from "@/components/ui/card";
 
-type Props = React.PropsWithChildren<{}>;
+type Props = { children?: React.ReactNode };
 
 const conversationsLayout = ({ children }: Props) => {
   return (
