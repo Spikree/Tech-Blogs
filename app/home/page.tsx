@@ -48,7 +48,7 @@ const Page = () => {
   }, [status, session]);
 
   return (
-    <div className="flex flex-col min-h-screen w-screen p-8 mt-5 sm:bg-gray-100">
+    <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-gray-100">
       {blogs.length > 0 ? (
         <div className="flex flex-wrap gap-6 justify-center items-center">
           {blogs.map((blog) => (
