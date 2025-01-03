@@ -21,8 +21,8 @@ type Blog = {
 const Page = () => {
   const { data: session, status } = useSession();
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const userName = session?.user?.name
-  const {toast} = useToast()
+  const userName = session?.user?.name;
+  const { toast } = useToast();
 
   const getAllBlogs = async (userId: string) => {
     try {
@@ -32,23 +32,27 @@ const Page = () => {
     } catch (error) {
       toast({
         title: "Error fetching all the blogs",
-        variant: "destructive"
-      })
+        variant: "destructive",
+      });
       console.error(error);
     }
   };
 
-  const likeBlogs = async (blogId : string, userId : string) => {
+  const likeBlogs = async (blogId: string, userId: string) => {
+    if (!session || !session.user) {
+      console.error("Session is null or user is undefined");
+      return;
+    }
     try {
-      const response = await axios.put(`/api/blog/like/${blogId}/${userId}`)
+      const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
       getAllBlogs(session.user.id);
       toast({
-        title: response.data.message
-      })
+        title: response.data.message,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
@@ -61,7 +65,12 @@ const Page = () => {
       {blogs.length > 0 ? (
         <div className="flex flex-wrap gap-6 justify-center items-center">
           {blogs.map((blog) => (
-            <BlogCard likeBlogs={likeBlogs} key={blog._id} blog={blog} userName={userName} />
+            <BlogCard
+              likeBlogs={likeBlogs}
+              key={blog._id}
+              blog={blog}
+              userName={userName}
+            />
           ))}
         </div>
       ) : (

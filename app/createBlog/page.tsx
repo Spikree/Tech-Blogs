@@ -22,9 +22,14 @@ const Page = () => {
 
   const createBlog = async (e : React.FormEvent) => {
     e.preventDefault();
+
+    if (! session || !session.user) {
+      console.error("Session is null or user is undefined");
+      return;
+    }
     try {
       const response = await axios.post("/api/blog/new", {
-        user: session.user.id,
+        user: await session.user.id,
         title: title,
         content: content,
       });
