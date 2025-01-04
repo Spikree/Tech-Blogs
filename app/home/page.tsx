@@ -39,10 +39,6 @@ const Page = () => {
   };
 
   const likeBlogs = async (blogId: string, userId: string) => {
-    if (!session || !session.user) {
-      console.error("Session is null or user is undefined");
-      return;
-    }
     try {
       const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
       getAllBlogs(session.user.id);

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Calendar,
-  Home,
-  Inbox,
-  LogOut,
-} from "lucide-react";
+import { Calendar, Home, Inbox, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
 import Image from "next/image";
@@ -22,6 +17,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "../ui/dropdown-menu";
+import {
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
 
 const items = [
   {
@@ -65,32 +70,42 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <div className="flex gap-4 px-4 items-center text-center align-middle">
-          {image ? (
-            <Image
-              src={image}
-              width={30}
-              height={30}
-              alt="Picture of the author"
-              className="rounded-full aspect-square object-cover"
-            />
-          ) : (
-            <div className="w-8 h-8 bg-gray-300 rounded-full" />
-          )}
-          <p>{session?.user?.name}</p>
-        </div>
-        <Button
-          onClick={() => {
-            signOut({
-              callbackUrl: "/",
-              redirect: true,
-            });
-          }}
-        >
-          SignOut
-          <LogOut />
-        </Button>
+      <SidebarFooter className="mb-10 sm:mb-15">
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <div className="flex gap-4 px-4 items-center text-center align-middle">
+              {image ? (
+                <Image
+                  src={image}
+                  width={30}
+                  height={30}
+                  alt="Picture of the author"
+                  className="rounded-full aspect-square object-cover"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gray-300 rounded-full" />
+              )}
+              <p>{session?.user?.name}</p>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="px-8 py-4 my-4">
+            <DropdownMenuLabel>My account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Button
+                onClick={() => {
+                  signOut({
+                    callbackUrl: "/",
+                    redirect: true,
+                  });
+                }}
+              >
+                SignOut
+                <LogOut />
+              </Button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );
