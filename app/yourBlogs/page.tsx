@@ -3,6 +3,7 @@
 import BlogCard from "@/components/shared/BlogCard";
 import ConfirmDelete from "@/components/shared/ConfirmDelete";
 import EditBlog from "@/components/shared/EditBlog";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -113,9 +114,10 @@ const Page = () => {
           })}
         </div>
       ) : (
-        <div className="flex flex-1 justify-center items-center text-4xl h-screen text-gray-500">
-          No blogs found
-        </div>
+        
+        <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
+        <div className="animate-pulse text-gray-1000 text-4xl">Loading...</div>
+      </Card>
       )}
       {showDeleteModal && (
         <ConfirmDelete

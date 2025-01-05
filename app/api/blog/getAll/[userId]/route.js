@@ -5,7 +5,7 @@ import Comment from "../../../../../models/comment.js"
 import User from "../../../../../models/user.js"
 
 export const GET = async (req, {params}) => {
-    const {userId} = await params;
+    const {userId} = params;
 
     if(!userId) {
         return new Response("User Id is required", {status: 400})
@@ -23,11 +23,14 @@ export const GET = async (req, {params}) => {
 
         const users = await User.find(
             { _id: { $in: userIds } },
-            { image: 1 } 
+            { image: 1, username: 1 }
         )
 
         const userImageMap = new Map(
             users.map(user => [user._id.toString(), user.image])
+        )
+        const userUsernameMap = new Map(
+            users.map(user => [user._id.toString(), user.username])
         )
 
         const userLikes = await Like.find({
@@ -50,7 +53,8 @@ export const GET = async (req, {params}) => {
             const blogObj = blog.toObject();
             return {
                 ...blogObj,
-                userImage: userImageMap.get(blog.user.toString()), 
+                userImage: userImageMap.get(blog.user.toString()),
+                username: userUsernameMap.get(blog.user.toString()), 
                 hasLiked: likedBlogIds.has(blog._id.toString()),
                 totalLikes: likeCounts[index],
                 totalComments: commentCounts[index]

@@ -55,21 +55,21 @@ const BlogCard = ({
       <div className="flex flex-col gap-4 ">
         <div className="max-h-max">
           <div className="flex justify-between">
-            <h1 className="text-2xl font-bold">{blog.title}</h1>
+            <h1 className="text-2xl font-bold cursor-pointer">{blog.title}</h1>
             <div className="w-20 h-20 p-3">
               <Image
                 src={image}
                 width={30}
                 height={30}
                 alt="Picture of the author"
-                className="rounded-full aspect-square object-cover"
+                className="rounded-full aspect-square cursor-pointer object-cover"
               />
             </div>
           </div>
-          <p className="text-gray-500">{userName}</p>
-          <span className="text-sm text-gray-500">{formattedDate}</span>
+          <p className="text-gray-500 cursor-pointer">{userName}</p>
+          <span className="text-sm text-gray-500 cursor-pointer">{formattedDate}</span>
         </div>
-        <p>
+        <p className="cursor-pointer"  onClick={() => blog._id && router.push(`/blog/${blog._id}`)}>
           {blog.content.length > 200
             ? `${blog.content.slice(0, 200)}...`
             : blog.content}

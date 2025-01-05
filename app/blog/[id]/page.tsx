@@ -10,7 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Heart } from "lucide-react";
+import { Heart, Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 type Comment = {
   id: string;
@@ -28,32 +31,52 @@ type Blog = {
   _id: string;
   title: string;
   content: string;
-  postedOn: string; 
+  postedOn: string;
   user: string;
   hasLiked: boolean;
   totalLikes: number;
   comments: Comment[];
   totalComments: number;
   ImageUrl: string;
+  username: string
 };
 
 export default function Page() {
   const params = useParams();
   const id = params.id as string;
-
+  const [comment, setComment] = useState<string>("");
+  const { data: session } = useSession();
+  const user = session?.user?.id;
   const [blog, setBlog] = useState<Blog | null>(null);
+  const { toast } = useToast();
+
+  const getBlog = async () => {
+    try {
+      const response = await axios.get(`/api/blog/get/${id}`);
+      setBlog(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const getBlog = async () => {
-      try {
-        const response = await axios.get(`/api/blog/get/${id}`);
-        setBlog(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getBlog();
   }, [id]);
+
+  const handleCommentSubmission = async (comment: string) => {
+    try {
+      const response = await axios.post(`/api/blog/comment/${id}/${user}`, {
+        comment,
+      });
+      getBlog();
+      setComment("");
+      toast({
+        title: response.data.message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const readableDate = blog
     ? new Date(blog.postedOn).toLocaleDateString("en-US", {
@@ -63,7 +86,12 @@ export default function Page() {
       })
     : null;
 
-  if (!blog) return <div>Loading...</div>;
+  if (!blog)
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-pulse text-gray-500 text-4xl">Loading...</div>
+      </div>
+    );
 
   return (
     <Card className="w-full p-10 mx-auto mb-6 hover:shadow-lg transition-shadow">
@@ -73,7 +101,7 @@ export default function Page() {
           <div className="text-sm text-muted-foreground">{readableDate}</div>
         </div>
         <div className="text-sm text-muted-foreground">
-          Author <span className="font-medium">{blog.user}</span>
+          Author :  <span className="font-medium">{blog.username}</span>
         </div>
       </CardHeader>
 
@@ -101,6 +129,49 @@ export default function Page() {
           </Card>
         </div>
       </CardFooter>
+
+      <Card className="flex justify-between items-center mt-4 gap-3 p-5">
+        <Textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Enter your comment"
+        />
+
+        <Send
+          onClick={() => handleCommentSubmission(comment)}
+          className="cursor-pointer text-gray-600 hover:text-gray-800"
+        />
+      </Card>
+
+      <Card className="w-full bg-white p-6 mt-10">
+        <h3 className="text-xl font-semibold mb-6 text-gray-800">
+          Comments ({blog.comments.length})
+        </h3>
+        {blog.comments.length > 0 ? (
+          <div className="space-y-6">
+            {blog.comments.map((comment) => (
+              <div
+                key={comment.id}
+                className="border-b border-gray-100 last:border-0 pb-4 last:pb-0"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    {comment.user.username[0].toUpperCase()}
+                  </span>
+                  <p className="font-medium text-sm text-gray-800">
+                    {comment.user.username}
+                  </p>
+                </div>
+                <p className="text-gray-700 pl-10">{comment.comment}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center py-4">
+            No comments yet. Be the first to share your thoughts!
+          </p>
+        )}
+      </Card>
     </Card>
   );
 }

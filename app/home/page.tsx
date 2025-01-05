@@ -5,6 +5,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BlogCard from "@/components/shared/BlogCard";
 import { useToast } from "@/hooks/use-toast";
+import { Card } from "@/components/ui/card";
 
 type Blog = {
   title: string;
@@ -14,6 +15,7 @@ type Blog = {
   _id: string;
   hasLiked: boolean;
   userImage: string;
+  username: string;
   totalLikes: number;
   totalComments: number;
 };
@@ -21,7 +23,6 @@ type Blog = {
 const Page = () => {
   const { data: session, status } = useSession();
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const userName = session?.user?.name;
   const { toast } = useToast();
 
   const getAllBlogs = async (userId: string) => {
@@ -65,14 +66,14 @@ const Page = () => {
               likeBlogs={likeBlogs}
               key={blog._id}
               blog={blog}
-              userName={userName}
+              userName={blog.username}
             />
           ))}
         </div>
       ) : (
-        <div className="flex flex-1 justify-center items-center text-4xl h-screen text-gray-500">
-          No blogs found
-        </div>
+      <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
+        <div className="animate-pulse text-gray-1000 text-4xl">Loading...</div>
+      </Card>
       )}
     </div>
   );
