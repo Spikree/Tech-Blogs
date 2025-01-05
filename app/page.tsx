@@ -33,15 +33,20 @@ export default function Home() {
       <Card className="p-5 max-w-max">
         <div className="flex flex-col gap-4">
           <Input placeholder="email" />
-          <Input placeholder="password"/>
+          <Input placeholder="password" />
           <Button>signIn</Button>
           <hr />
-          {
-            providers && 
+          {providers &&
             Object.values(providers).map((provider) => (
-              <Button key={provider.id} onClick={() => {signIn(provider.id,{callbackUrl: '/home'})}}>signIn with {provider.name}</Button>
-            ))
-          }
+              <Button
+                key={provider.id}
+                onClick={() => {
+                  signIn(provider.id, { callbackUrl: "/home" });
+                }}
+              >
+                signIn with {provider.name}
+              </Button>
+            ))}
         </div>
       </Card>
     </div>

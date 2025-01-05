@@ -1,8 +1,10 @@
+"use client";
+
 import React from "react";
 import { Card } from "../ui/card";
 import { Heart, MessageCircle, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 type Props = {
@@ -43,6 +45,8 @@ const BlogCard = ({
     day: "numeric",
   });
   const pathname = usePathname();
+
+  const router = useRouter();
 
   const image: string = blog.userImage;
 
@@ -87,7 +91,10 @@ const BlogCard = ({
               />
               <span>{blog.totalLikes}</span>
             </Card>
-            <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
+            <Card
+              onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
+              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
+            >
               <MessageCircle className="w-4 h-4" />
               <span>{blog.totalComments}</span>
             </Card>
