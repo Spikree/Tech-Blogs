@@ -42,11 +42,14 @@ const Page = () => {
     }
   };
 
-  const editBlog = async (blogId) => {
+  const editBlog = async (blogId : string) => {
     try {
-      const response = await axios.patch(`/api/blog/edit/${blogId}`, {title:titleToEdit, content:contentToEdit});
-      console.log(response)
-      setShowEditModal(false)
+      const response = await axios.patch(`/api/blog/edit/${blogId}`, {
+        title: titleToEdit,
+        content: contentToEdit,
+      });
+      console.log(response);
+      setShowEditModal(false);
       getAllBlogsByUser(session?.user?.id);
       toast({
         title: "Blog edited sucessfully",
@@ -54,13 +57,13 @@ const Page = () => {
     } catch (error) {
       toast({
         title: "Error editing blog",
-        variant:"destructive"
-      })
-      console.log(error)
+        variant: "destructive",
+      });
+      console.log(error);
     }
-  }
+  };
 
-  const getSingleBlog = async (blogId) => {
+  const getSingleBlog = async (blogId : string) => {
     try {
       const response = await axios.get(`/api/blog/get/${blogId}`);
       setTitleToEdit(response.data.title);
@@ -70,7 +73,7 @@ const Page = () => {
     }
   };
 
-  const deleteBlog = async (deleteId) => {
+  const deleteBlog = async (deleteId : string) => {
     try {
       const response = await axios.delete(`/api/blog/delete/${deleteId}`);
       getAllBlogsByUser(session?.user?.id);
@@ -114,10 +117,11 @@ const Page = () => {
           })}
         </div>
       ) : (
-        
         <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
-        <div className="animate-pulse text-gray-1000 text-4xl">Loading...</div>
-      </Card>
+          <div className="animate-pulse text-gray-1000 text-4xl">
+            Loading...
+          </div>
+        </Card>
       )}
       {showDeleteModal && (
         <ConfirmDelete
@@ -128,8 +132,8 @@ const Page = () => {
       )}
       {showEditModal && (
         <EditBlog
-        editId={editId}
-        editBlog={editBlog}
+          editId={editId}
+          editBlog={editBlog}
           titleToEdit={titleToEdit}
           contentToEdit={contentToEdit}
           setTitleToEdit={setTitleToEdit}

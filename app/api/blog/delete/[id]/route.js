@@ -4,7 +4,7 @@ import Blog from "../../../../../models/blog.js";
 export const DELETE = async (req, { params }) => {
     try {
       await connectToDb();
-      const { id } = params;
+      const { id } = await params;
   
       const deletedBlog = await Blog.findByIdAndDelete(id);
   

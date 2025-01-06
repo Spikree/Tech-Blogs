@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Card } from "../ui/card";
 import { Heart, MessageCircle, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
@@ -22,7 +23,7 @@ type Props = {
   userName: string;
   setShowDeleteModal: (value: boolean) => void;
   setDeleteId: (value: string) => void;
-  setShowEditModal: (value: string) => void;
+  setShowEditModal: Dispatch<SetStateAction<boolean>>;
   setEditId: (value: string) => void;
   getSingleBlog: (value: string) => void;
   likeBlogs: (blogId: string, userId: string) => void;

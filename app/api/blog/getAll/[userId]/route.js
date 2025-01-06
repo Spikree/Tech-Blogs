@@ -5,7 +5,7 @@ import Comment from "../../../../../models/comment.js"
 import User from "../../../../../models/user.js"
 
 export const GET = async (req, {params}) => {
-    const {userId} = params;
+    const {userId} = await params;
 
     if(!userId) {
         return new Response("User Id is required", {status: 400})

@@ -11,7 +11,7 @@ type Props = {
     contentToEdit: string;
     setTitleToEdit: (value : string) => void;
     setContentToEdit: (value : string) => void;
-    editBlog: () => void;
+    editBlog: (blogId: string) => Promise<void>
     editId: string;
 };
 
