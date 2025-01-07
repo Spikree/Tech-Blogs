@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Card } from '../ui/card'
 import { Button } from '../ui/button'
 
 type Props = {
-    setShowDeleteModal: (value: boolean) => void;
+    setShowDeleteModal:Dispatch<SetStateAction<boolean>>;
     deleteId: string;
     deleteBlog: (value: string) => void;
 }

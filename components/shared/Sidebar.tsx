@@ -48,7 +48,7 @@ const items = [
 
 export function AppSidebar() {
   const { data: session } = useSession();
-  const image: string = session?.user?.image;
+  const image: string = session?.user?.image ?? "";
   return (
     <Sidebar>
       <SidebarContent>

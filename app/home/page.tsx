@@ -42,7 +42,9 @@ const Page = () => {
   const likeBlogs = async (blogId: string, userId: string) => {
     try {
       const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
-      getAllBlogs(session.user.id);
+      if (status === "authenticated" && session?.user?.id) {
+        getAllBlogs(session.user.id);
+      }
       toast({
         title: response.data.message,
       });

@@ -68,6 +68,11 @@ const SheetContent = React.forwardRef<
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
+
+      {/* Add SheetTitle and SheetDescription for accessibility */}
+      <SheetTitle></SheetTitle>
+      <SheetDescription></SheetDescription>
+
       {children}
     </SheetPrimitive.Content>
   </SheetPortal>

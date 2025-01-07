@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   Card,
@@ -46,11 +46,12 @@ export default function Page() {
   const id = params.id as string;
   const [comment, setComment] = useState<string>("");
   const { data: session } = useSession();
-  const user = session?.user?.id;
+  const user : string =   session?.user?.id ?? ''
   const [blog, setBlog] = useState<Blog | null>(null);
   const { toast } = useToast();
+  
 
-  const getBlog = async () => {
+  const getBlog = useCallback(async () => {
     try {
       const response = await axios.get(`/api/blog/get/${id}`);
       setBlog(response.data);
@@ -58,11 +59,11 @@ export default function Page() {
     } catch (error) {
       console.log(error);
     }
-  };
+  },[id]);
 
   useEffect(() => {
     getBlog();
-  }, [id]);
+  }, [id, getBlog]);
 
   const likeBlogs = async (blogId: string, userId: string) => {
     try {

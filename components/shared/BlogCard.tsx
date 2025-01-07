@@ -21,11 +21,11 @@ type Props = {
     totalComments: number;
   };
   userName: string;
-  setShowDeleteModal: (value: boolean) => void;
-  setDeleteId: (value: string) => void;
-  setShowEditModal: Dispatch<SetStateAction<boolean>>;
-  setEditId: (value: string) => void;
-  getSingleBlog: (value: string) => void;
+  setShowDeleteModal?: Dispatch<SetStateAction<boolean>>;
+  setDeleteId?: (value: string) => void;
+  setShowEditModal?: Dispatch<SetStateAction<boolean>>;
+  setEditId?: (value: string) => void;
+  getSingleBlog?: (value: string) => void;
   likeBlogs: (blogId: string, userId: string) => void;
 };
 
@@ -46,17 +46,20 @@ const BlogCard = ({
     day: "numeric",
   });
   const pathname = usePathname();
-
   const router = useRouter();
-
   const image: string = blog.userImage;
 
   return (
     <Card className="p-5 w-96">
-      <div className="flex flex-col gap-4 ">
+      <div className="flex flex-col gap-4">
         <div className="max-h-max">
           <div className="flex justify-between">
-            <h1 className="text-2xl font-bold cursor-pointer">{blog.title}</h1>
+            <h1
+              onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
+              className="text-2xl font-bold cursor-pointer"
+            >
+              {blog.title}
+            </h1>
             <div className="w-20 h-20 p-3">
               <Image
                 src={image}
@@ -68,9 +71,14 @@ const BlogCard = ({
             </div>
           </div>
           <p className="text-gray-500 cursor-pointer">{userName}</p>
-          <span className="text-sm text-gray-500 cursor-pointer">{formattedDate}</span>
+          <span className="text-sm text-gray-500 cursor-pointer">
+            {formattedDate}
+          </span>
         </div>
-        <p className="cursor-pointer"  onClick={() => blog._id && router.push(`/blog/${blog._id}`)}>
+        <p
+          className="cursor-pointer"
+          onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
+        >
           {blog.content.length > 200
             ? `${blog.content.slice(0, 200)}...`
             : blog.content}
@@ -79,7 +87,9 @@ const BlogCard = ({
           <div className="flex gap-3 mt-auto">
             <Card
               onClick={() => {
-                likeBlogs(blog._id, session?.user?.id);
+                if (session?.user?.id) {
+                  likeBlogs(blog._id, session.user.id);
+                }
               }}
               className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
             >
@@ -101,29 +111,33 @@ const BlogCard = ({
             </Card>
           </div>
 
-          {pathname === "/yourBlogs" ? (
+          {pathname === "/yourBlogs" && (
             <div className="flex gap-1 mt-auto">
               <Card
                 onClick={() => {
-                  setShowDeleteModal((prev) => !prev);
-                  setDeleteId(blog._id);
+                  if (setShowDeleteModal && setDeleteId) {
+                    setShowDeleteModal(true);
+                    setDeleteId(blog._id);
+                  }
                 }}
                 className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
               >
-                <Trash className="w-4 h-4 " />
+                <Trash className="w-4 h-4" />
               </Card>
               <Card
                 onClick={() => {
-                  setShowEditModal((prev) => !prev);
-                  setEditId(blog._id);
-                  getSingleBlog(blog._id);
+                  if (setShowEditModal && setEditId && getSingleBlog) {
+                    setShowEditModal(true);
+                    setEditId(blog._id);
+                    getSingleBlog(blog._id);
+                  }
                 }}
                 className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
               >
                 <Pencil className="w-4 h-4" />
               </Card>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </Card>

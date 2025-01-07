@@ -22,7 +22,7 @@ type Blog = {
 };
 
 const Page = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [deleteId, setDeleteId] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
@@ -31,7 +31,7 @@ const Page = () => {
   const [titleToEdit, setTitleToEdit] = useState<string>("");
   const [contentToEdit, setContentToEdit] = useState<string>("");
   const { toast } = useToast();
-  const userName: string = session?.user?.name;
+  const userName: string = session?.user?.name ?? "";
 
   const getAllBlogsByUser = async (userId: string) => {
     try {
@@ -46,7 +46,10 @@ const Page = () => {
   const likeBlogs = async (blogId: string, userId: string) => {
     try {
       const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
-      getAllBlogsByUser(session?.user?.id);
+      if (status === "authenticated" && session?.user?.id) {
+        getAllBlogsByUser(session?.user?.id);
+      }
+
       toast({
         title: response.data.message,
       });
@@ -63,7 +66,10 @@ const Page = () => {
       });
       console.log(response);
       setShowEditModal(false);
-      getAllBlogsByUser(session?.user?.id);
+      if (status === "authenticated" && session?.user?.id) {
+        getAllBlogsByUser(session?.user?.id);
+      }
+
       toast({
         title: "Blog edited sucessfully",
       });
@@ -89,7 +95,10 @@ const Page = () => {
   const deleteBlog = async (deleteId: string) => {
     try {
       const response = await axios.delete(`/api/blog/delete/${deleteId}`);
-      getAllBlogsByUser(session?.user?.id);
+      if (status === "authenticated" && session?.user?.id) {
+        getAllBlogsByUser(session?.user?.id);
+      }
+
       setShowDeleteModal(false);
       toast({
         title: response.data,
