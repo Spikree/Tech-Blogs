@@ -24,7 +24,7 @@ export const GET = async (req, { params }) => {
     const username = user.username
 
     const userLike = await Like.findOne({
-      user: id,
+      user: userId,
       blog: blog._id,
     });
 
@@ -39,7 +39,7 @@ export const GET = async (req, { params }) => {
 
       const blogWithDetails = {
         ...blog.toObject(),
-        hasLiked: !userLike,
+        hasLiked: userLike,
         totalLikes,
         comments: comments.map(comment => comment.toObject()),
         totalComments: await totalComments,

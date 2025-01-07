@@ -57,6 +57,12 @@ const Page = () => {
     }
   }, [status, session]);
 
+  if(status === "unauthenticated") {
+    <div>
+      <h1 className="text-4xl">Not logged in</h1>
+    </div>
+  }
+
   return (
     <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-gray-100">
       {blogs.length > 0 ? (

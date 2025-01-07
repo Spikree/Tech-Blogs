@@ -38,7 +38,7 @@ type Blog = {
   comments: Comment[];
   totalComments: number;
   ImageUrl: string;
-  username: string
+  username: string;
 };
 
 export default function Page() {
@@ -54,6 +54,7 @@ export default function Page() {
     try {
       const response = await axios.get(`/api/blog/get/${id}`);
       setBlog(response.data);
+      console.log(response.data)
     } catch (error) {
       console.log(error);
     }
@@ -62,6 +63,18 @@ export default function Page() {
   useEffect(() => {
     getBlog();
   }, [id]);
+
+  const likeBlogs = async (blogId: string, userId: string) => {
+    try {
+      const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
+      getBlog();
+      toast({
+        title: response.data.message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCommentSubmission = async (comment: string) => {
     try {
@@ -98,10 +111,10 @@ export default function Page() {
       <CardHeader>
         <div className="flex justify-between items-center mb-2 flex-wrap">
           <CardTitle className="text-2xl font-bold">{blog.title}</CardTitle>
-          <div className="text-sm text-muted-foreground">{readableDate}</div>
+          <div className="text-sm text-muted-foreground">Author : {blog.username} </div>
         </div>
         <div className="text-sm text-muted-foreground">
-          Author :  <span className="font-medium">{blog.username}</span>
+          <span className="font-medium">{readableDate}</span>
         </div>
       </CardHeader>
 
@@ -117,7 +130,10 @@ export default function Page() {
 
       <CardFooter>
         <div className="inline-flex items-center gap-2 px-4 py-2 cursor-pointer transition-colors duration-200">
-          <Card className="inline-flex items-center gap-2 px-4 py-2 cursor-pointer transition-colors duration-200">
+          <Card
+            onClick={() => likeBlogs(id, user)}
+            className="inline-flex items-center gap-2 px-4 py-2 cursor-pointer transition-colors duration-200"
+          >
             <Heart
               className={`w-5 h-5 transition-colors duration-200 ${
                 blog.hasLiked ? "text-red-600 fill-red-600" : "text-gray-600"
@@ -149,9 +165,9 @@ export default function Page() {
         </h3>
         {blog.comments.length > 0 ? (
           <div className="space-y-6">
-            {blog.comments.map((comment) => (
+            {blog.comments.map((comment, index) => (
               <div
-                key={comment.id}
+                key={index}
                 className="border-b border-gray-100 last:border-0 pb-4 last:pb-0"
               >
                 <div className="flex items-center gap-2 mb-2">

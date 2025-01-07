@@ -31,6 +31,7 @@ const Page = () => {
   const [titleToEdit, setTitleToEdit] = useState<string>("");
   const [contentToEdit, setContentToEdit] = useState<string>("");
   const { toast } = useToast();
+  const userName: string = session?.user?.name;
 
   const getAllBlogsByUser = async (userId: string) => {
     try {
@@ -42,7 +43,19 @@ const Page = () => {
     }
   };
 
-  const editBlog = async (blogId : string) => {
+  const likeBlogs = async (blogId: string, userId: string) => {
+    try {
+      const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
+      getAllBlogsByUser(session?.user?.id);
+      toast({
+        title: response.data.message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const editBlog = async (blogId: string) => {
     try {
       const response = await axios.patch(`/api/blog/edit/${blogId}`, {
         title: titleToEdit,
@@ -63,7 +76,7 @@ const Page = () => {
     }
   };
 
-  const getSingleBlog = async (blogId : string) => {
+  const getSingleBlog = async (blogId: string) => {
     try {
       const response = await axios.get(`/api/blog/get/${blogId}`);
       setTitleToEdit(response.data.title);
@@ -73,7 +86,7 @@ const Page = () => {
     }
   };
 
-  const deleteBlog = async (deleteId : string) => {
+  const deleteBlog = async (deleteId: string) => {
     try {
       const response = await axios.delete(`/api/blog/delete/${deleteId}`);
       getAllBlogsByUser(session?.user?.id);
@@ -105,6 +118,7 @@ const Page = () => {
           {blogs.map((blog, index) => {
             return (
               <BlogCard
+                userName={userName}
                 getSingleBlog={getSingleBlog}
                 setShowEditModal={setShowEditModal}
                 setEditId={setEditId}
@@ -112,6 +126,7 @@ const Page = () => {
                 blog={blog}
                 setShowDeleteModal={setShowDeleteModal}
                 setDeleteId={setDeleteId}
+                likeBlogs={likeBlogs}
               />
             );
           })}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { X } from "lucide-react";
 
 type Props = {
-    setShowEditModal: string;
+    setShowEditModal: Dispatch<SetStateAction<boolean>>;
     titleToEdit: string;
     contentToEdit: string;
     setTitleToEdit: (value : string) => void;

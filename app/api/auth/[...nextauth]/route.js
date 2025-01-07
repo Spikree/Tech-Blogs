@@ -32,7 +32,6 @@ const handler = NextAuth({
             
             try {
 
-                // connect to the Db later
                 await connectToDb()
 
                 const userExists = await User.findOne({
