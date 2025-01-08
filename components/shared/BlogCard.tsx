@@ -3,7 +3,7 @@
 import React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { Card } from "../ui/card";
-import { Heart, MessageCircle, Pencil, Trash } from "lucide-react";
+import { Heart, MessageCircle, Pencil, StickyNote, Trash } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -138,6 +138,9 @@ const BlogCard = ({
               </Card>
             </div>
           )}
+          { pathname === "/home" && <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
+            <StickyNote className="w-4 h-4" />
+          </Card>}
         </div>
       </div>
     </Card>

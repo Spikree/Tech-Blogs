@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "205cba28-7635-4d81-b5d8-bb6eac1ea5fb",
+		"name": "Blog app next js",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37655651"
+	},
+	"item": [
+		{
+			"name": "create blog",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user\" : \"677245fc8c8e17d00007802e\",\r\n    \"title\" : \"Test 3\",\r\n    \"content\" : \"TEst 3 gvhv hgvgv ghgv hgvg vvuhb hvuh b b bjby yg buvhj  vbyg tfhin yugnuiugyg gbiuinumiu gbuyniuguyn gnu iy jhbynmnuyg vniuyi bbyuinbby nbhuihbu vynubkh yugniuyu nguygihum gniuym uyginu m ugnimhknj ugbnhjb gjbknhjk hgbnjg gjhnbnmn gjnkhkjmn hgjnkjb gj gngnkhknj gjbhnbg hgkjng kgjnh jh uynh h  hbn jkbbhnk jhn jkbjhgbgg ghbvjnhj ghbjnb\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/blog/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete blog",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/delete/6774d0b19f6282802d171884",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"delete",
+						"6774d0b19f6282802d171884"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit blog",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\" : \"test 1 edited\",\r\n    \"content\" : \"Test 1 edited\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/blog/edit/6772515ab0b56e1c3ef10cfc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"edit",
+						"6772515ab0b56e1c3ef10cfc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get single blog",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/get/6774d29c9f6282802d171996",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"get",
+						"6774d29c9f6282802d171996"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all blogs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/getAll/677245fc8c8e17d00007802e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"getAll",
+						"677245fc8c8e17d00007802e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all blogs by user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/getAllByUser/677245fc8c8e17d00007802e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"getAllByUser",
+						"677245fc8c8e17d00007802e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "like blog",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/like/67725422b0b56e1c3ef10d03/677245fc8c8e17d00007802e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"like",
+						"67725422b0b56e1c3ef10d03",
+						"677245fc8c8e17d00007802e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment on blog",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\" : \"test comment 2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/blog/comment/6774d29c9f6282802d171996/677245fc8c8e17d00007802e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"comment",
+						"6774d29c9f6282802d171996",
+						"677245fc8c8e17d00007802e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete comment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/deleteComment/677261d2c26192697f54f7d6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"deleteComment",
+						"677261d2c26192697f54f7d6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "save blog",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/blog/save/6774d29c9f6282802d171996/677245fc8c8e17d00007802e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"blog",
+						"save",
+						"6774d29c9f6282802d171996",
+						"677245fc8c8e17d00007802e"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

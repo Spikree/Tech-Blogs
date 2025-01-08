@@ -53,6 +53,17 @@ const Page = () => {
     }
   };
 
+  // const saveBlogs = async (blogId: string, userId: string) => {
+  //   try {
+  //     const response = await axios.put(`/api/blog/save/${blogId}/${userId}`);
+  //     toast({
+  //       title: response.data.message,
+  //     });
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       getAllBlogs(session.user.id);
