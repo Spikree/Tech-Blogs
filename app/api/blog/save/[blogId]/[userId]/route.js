@@ -20,9 +20,9 @@ export const PUT = async(req,{params}) => {
         })
 
         if(alreadySaved) {
-            await Save.findOneAndDelete(existingLike._id)
+            await Save.findOneAndDelete(alreadySaved._id)
             return new Response(JSON.stringify({
-                message: "Like removed",
+                message: "Unsaved",
                 saved: false,
             }),{status:200})
         }

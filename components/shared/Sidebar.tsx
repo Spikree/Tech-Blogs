@@ -44,6 +44,11 @@ const items = [
     url: "/yourBlogs",
     icon: Calendar,
   },
+  {
+    title: "Saved Blogs",
+    url: "/savedBlogs",
+    icon: Calendar,
+  },
 ];
 
 export function AppSidebar() {

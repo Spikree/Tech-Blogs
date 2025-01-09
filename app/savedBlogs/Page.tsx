@@ -25,7 +25,7 @@ const Page = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const { toast } = useToast();
 
-  const getAllBlogs = async (userId: string) => {
+  const getSavedBlogs = async (userId: string) => {
     try {
       const response = await axios.get(`/api/blog/getAll/${userId}`);
       setBlogs(response.data);
@@ -43,7 +43,7 @@ const Page = () => {
     try {
       const response = await axios.put(`/api/blog/like/${blogId}/${userId}`);
       if (status === "authenticated" && session?.user?.id) {
-        getAllBlogs(session.user.id);
+        getSavedBlogs(session.user.id);
       }
       toast({
         title: response.data.message,
@@ -66,7 +66,7 @@ const Page = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
-      getAllBlogs(session.user.id);
+        getSavedBlogs(session.user.id);
     }
   }, [status, session]);
 

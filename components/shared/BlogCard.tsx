@@ -27,6 +27,7 @@ type Props = {
   setEditId?: (value: string) => void;
   getSingleBlog?: (value: string) => void;
   likeBlogs: (blogId: string, userId: string) => void;
+  saveBlogs: (blogId: string, userId: string) => void;
 };
 
 const BlogCard = ({
@@ -38,6 +39,7 @@ const BlogCard = ({
   setEditId,
   getSingleBlog,
   likeBlogs,
+  saveBlogs,
 }: Props) => {
   const { data: session } = useSession();
   const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
@@ -138,9 +140,18 @@ const BlogCard = ({
               </Card>
             </div>
           )}
-          { pathname === "/home" && <Card className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer">
-            <StickyNote className="w-4 h-4" />
-          </Card>}
+          {pathname === "/home" && (
+            <Card
+              onClick={() => {
+                if (session?.user?.id) {
+                  saveBlogs(blog._id, session?.user.id);
+                }
+              }}
+              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
+            >
+              <StickyNote className="w-4 h-4" />
+            </Card>
+          )}
         </div>
       </div>
     </Card>
