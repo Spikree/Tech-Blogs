@@ -27,7 +27,7 @@ type Props = {
   setEditId?: (value: string) => void;
   getSingleBlog?: (value: string) => void;
   likeBlogs: (blogId: string, userId: string) => void;
-  saveBlogs: (blogId: string, userId: string) => void;
+  saveBlogs?: (blogId: string, userId: string) => void;
 };
 
 const BlogCard = ({
@@ -143,7 +143,7 @@ const BlogCard = ({
           {pathname === "/home" && (
             <Card
               onClick={() => {
-                if (session?.user?.id) {
+                if (session?.user?.id && saveBlogs) {
                   saveBlogs(blog._id, session?.user.id);
                 }
               }}

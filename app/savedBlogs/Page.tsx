@@ -27,7 +27,7 @@ const Page = () => {
 
   const getSavedBlogs = async (userId: string) => {
     try {
-      const response = await axios.get(`/api/blog/getAll/${userId}`);
+      const response = await axios.get(`/api/blog/getSaved/${userId}`);
       setBlogs(response.data);
       // console.log(response.data)
     } catch (error) {
@@ -45,17 +45,6 @@ const Page = () => {
       if (status === "authenticated" && session?.user?.id) {
         getSavedBlogs(session.user.id);
       }
-      toast({
-        title: response.data.message,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const saveBlogs = async (blogId: string, userId: string) => {
-    try {
-      const response = await axios.put(`/api/blog/save/${blogId}/${userId}`);
       toast({
         title: response.data.message,
       });
@@ -82,7 +71,7 @@ const Page = () => {
         <div className="flex flex-wrap gap-6 justify-center items-center">
           {blogs.map((blog) => (
             <BlogCard
-              saveBlogs={saveBlogs}
+              
               likeBlogs={likeBlogs}
               key={blog._id}
               blog={blog}
