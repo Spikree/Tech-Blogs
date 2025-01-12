@@ -16,6 +16,7 @@ type Props = {
     user: string;
     _id: string;
     hasLiked: boolean;
+    hasSaved: boolean;
     userImage: string;
     totalLikes: number;
     totalComments: number;
@@ -81,7 +82,7 @@ const BlogCard = ({
           className="cursor-pointer"
           onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
         >
-          {blog.content.length > 200
+          {blog?.content?.length > 200
             ? `${blog.content.slice(0, 200)}...`
             : blog.content}
         </p>
@@ -140,7 +141,7 @@ const BlogCard = ({
               </Card>
             </div>
           )}
-          {pathname === "/home" && (
+          {(pathname === "/home" || pathname === "/savedBlogs") && (
             <Card
               onClick={() => {
                 if (session?.user?.id && saveBlogs) {
@@ -149,7 +150,13 @@ const BlogCard = ({
               }}
               className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
             >
-              <StickyNote className="w-4 h-4" />
+              <StickyNote
+                className={
+                  blog.hasSaved
+                    ? "w-4 h-4 text-blue-600 fill-blue-100"
+                    : "w-h h-4"
+                }
+              />
             </Card>
           )}
         </div>

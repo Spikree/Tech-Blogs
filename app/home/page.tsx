@@ -14,6 +14,7 @@ type Blog = {
   user: string;
   _id: string;
   hasLiked: boolean;
+  hasSaved: boolean;
   userImage: string;
   username: string;
   totalLikes: number;
@@ -56,6 +57,10 @@ const Page = () => {
   const saveBlogs = async (blogId: string, userId: string) => {
     try {
       const response = await axios.put(`/api/blog/save/${blogId}/${userId}`);
+      // console.log(response)
+      if (status === "authenticated" && session?.user?.id) {
+        getAllBlogs(session.user.id);
+      }
       toast({
         title: response.data.message,
       });
@@ -93,7 +98,7 @@ const Page = () => {
       ) : (
         <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
           <div className="animate-pulse text-gray-1000 text-4xl">
-            Loading...
+            NO BLOGS FOUND
           </div>
         </Card>
       )}

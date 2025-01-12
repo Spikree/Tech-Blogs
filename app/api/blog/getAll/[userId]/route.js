@@ -3,6 +3,7 @@ import Blog from "../../../../../models/blog.js"
 import Like from "../../../../../models/likes.js"
 import Comment from "../../../../../models/comment.js"
 import User from "../../../../../models/user.js"
+import Save from "../../../../../models/save.js"
 
 export const GET = async (req, {params}) => {
     const {userId} = await params;
@@ -33,6 +34,14 @@ export const GET = async (req, {params}) => {
             users.map(user => [user._id.toString(), user.username])
         )
 
+        // Get user saves
+        const userSaves = await Save.find({
+            userId: userId,
+            blogId: {$in: blogs.map(blog => blog._id)}
+        });
+
+        const savedBlogIds = new Set(userSaves.map(save => save.blogId.toString()))
+
         const userLikes = await Like.find({
             user: userId,
             blog: {$in: blogs.map(blog => blog._id)}
@@ -56,6 +65,7 @@ export const GET = async (req, {params}) => {
                 userImage: userImageMap.get(blog.user.toString()),
                 username: userUsernameMap.get(blog.user.toString()), 
                 hasLiked: likedBlogIds.has(blog._id.toString()),
+                hasSaved: savedBlogIds.has(blog._id.toString()),
                 totalLikes: likeCounts[index],
                 totalComments: commentCounts[index]
             }

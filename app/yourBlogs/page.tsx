@@ -16,6 +16,7 @@ type Blog = {
   user: string;
   _id: string;
   hasLiked: boolean;
+  hasSaved: boolean;
   userImage: string;
   totalLikes: number;
   totalComments: number;
@@ -142,8 +143,8 @@ const Page = () => {
         </div>
       ) : (
         <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
-          <div className="animate-pulse text-gray-1000 text-4xl">
-            Loading...
+          <div className="animate-pulse text-gray-1000 text-4xl p-4">
+            NO USER BLOGS FOUND, PUBLISH A BLOG? 
           </div>
         </Card>
       )}
