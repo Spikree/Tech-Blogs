@@ -29,7 +29,7 @@ const Page = () => {
     try {
       const response = await axios.get(`/api/blog/getSaved/${userId}`);
       setBlogs(response.data);
-      // console.log(response.data)
+      console.log(response)
     } catch (error) {
       toast({
         title: "Error fetching all the blogs",
