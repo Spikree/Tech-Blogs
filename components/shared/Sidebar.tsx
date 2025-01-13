@@ -2,8 +2,8 @@
 
 import { Calendar, Home, Inbox, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -54,6 +54,8 @@ const items = [
 export function AppSidebar() {
   const { data: session } = useSession();
   const image: string = session?.user?.image ?? "";
+  const pathname = usePathname();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -63,8 +65,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton 
+                    asChild
+                    variant={pathname === item.url ? "outline" : "default"}
+                  >
+                    <a href={item.url} className="flex items-center gap-2">
                       <item.icon />
                       <span>{item.title}</span>
                     </a>

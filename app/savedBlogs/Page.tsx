@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import BlogCard from "@/components/shared/BlogCard";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 type Blog = {
   title: string;
@@ -76,6 +77,16 @@ const Page = () => {
       getSavedBlogs(session.user.id);
     }
   }, [status, session]);
+
+  if (!blogs || blogs.length === 0) {
+    return (
+      <div className="flex flex-col min-h-screen w-screen p-8 ">
+        <Card className="h-full w-full animate-pulse flex items-center justify-center">
+          <LoadingSpinner/>
+        </Card>
+      </div>
+    );
+  }
   
 
   return (

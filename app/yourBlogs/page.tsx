@@ -3,6 +3,7 @@
 import BlogCard from "@/components/shared/BlogCard";
 import ConfirmDelete from "@/components/shared/ConfirmDelete";
 import EditBlog from "@/components/shared/EditBlog";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -120,6 +121,16 @@ const Page = () => {
     };
     fetchBlogs();
   }, [session]);
+
+  if (!blogs || blogs.length === 0) {
+    return (
+      <div className="flex flex-col min-h-screen w-screen p-8 ">
+        <Card className="h-full w-full animate-pulse flex items-center justify-center">
+          <LoadingSpinner/>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-gray-100">
