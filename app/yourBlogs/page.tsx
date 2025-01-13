@@ -124,8 +124,8 @@ const Page = () => {
 
   if (!blogs || blogs.length === 0) {
     return (
-      <div className="flex flex-col min-h-screen w-screen p-8 ">
-        <Card className="h-full w-full animate-pulse flex items-center justify-center">
+      <div className="flex flex-col min-h-screen w-screen p-8 sm:min-h-screen">
+        <Card className="h-full w-full sm:min-h-full animate-pulse flex items-center justify-center">
           <LoadingSpinner/>
         </Card>
       </div>

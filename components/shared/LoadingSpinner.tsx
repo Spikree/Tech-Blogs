@@ -2,7 +2,7 @@ import React from 'react';
 
 const LoadingSpinner = () => {
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full min-h-screen flex items-center justify-center">
       <div className="relative">
         <div className="absolute inset-0 rounded-full bg-gray-100 animate-pulse" />
         

@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, Home, Inbox, LogOut } from "lucide-react";
+import { Bookmark, Calendar, Home, Inbox, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -47,7 +47,7 @@ const items = [
   {
     title: "Saved Blogs",
     url: "/savedBlogs",
-    icon: Calendar,
+    icon: Bookmark,
   },
 ];
 
