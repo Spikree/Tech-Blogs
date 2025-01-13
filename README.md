@@ -20,17 +20,33 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## environment variables required
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+MONGODB_URI=
+appName=
+GOOGLE_CLIENT_ID=
+GOOGLE_SECRET=
+NEXTAUTH_URL=
+NEXTAUTH_URL_INTERNAL=
+NEXTAUTH_SECRET=
+```
+To get your google auth provider go to (https://console.cloud.google.com/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Troubleshooting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Port Already in Use: Kill the process running on the port or change the port in package.json.
+2. Environment Variable Errors: Ensure all required variables are set in the .env file.
 
-## Deploy on Vercel
+## Known Issues
+1. The saved blogs route is visible in the development app but not on the hosted website.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Future Features
+1. Dark Mode Support:
+Implement a toggle for light and dark themes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. Search Functionality
+Implement a search functionality to search blogs and users by their name
+
+3. Like comments and reply to comments
+Implement a feature to like the comments and reply to the comments
