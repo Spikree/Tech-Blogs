@@ -25,9 +25,11 @@ type Blog = {
 const Page = () => {
   const { data: session, status } = useSession();
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
   const getSavedBlogs = async (userId: string) => {
+    setLoading(true);
     try {
       const response = await axios.get(`/api/blog/getSaved/${userId}`);
       const fetchedBlogs = Array.isArray(response.data) ? response.data : [];
@@ -39,6 +41,8 @@ const Page = () => {
         variant: "destructive",
       });
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,16 +82,15 @@ const Page = () => {
     }
   }, [status, session]);
 
-  if (!blogs || blogs.length === 0) {
+  if (loading) {
     return (
       <div className="flex flex-col min-h-screen w-screen p-8 ">
         <Card className="h-full w-full animate-pulse flex items-center justify-center">
-          <LoadingSpinner/>
+          <LoadingSpinner />
         </Card>
       </div>
     );
   }
-  
 
   return (
     <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-background-100">
@@ -104,10 +107,8 @@ const Page = () => {
           ))}
         </div>
       ) : (
-        <Card className="h-full w-full animate-pulse flex items-center justify-center bg-background-300">
-          <div className="animate-pulse text-gray-1000 text-4xl">
-            NO SAVED BLOGS FOUND
-          </div>
+        <Card className="h-screen w-full flex items-center justify-center bg-background-300">
+          <div className="text-gray-1000 text-4xl">NO SAVED BLOGS FOUND</div>
         </Card>
       )}
     </div>

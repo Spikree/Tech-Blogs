@@ -32,16 +32,20 @@ const Page = () => {
   const [editId, setEditId] = useState<string>("");
   const [titleToEdit, setTitleToEdit] = useState<string>("");
   const [contentToEdit, setContentToEdit] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const userName: string = session?.user?.name ?? "";
 
   const getAllBlogsByUser = async (userId: string) => {
+    setLoading(true);
     try {
       const response = await axios.get(`/api/blog/getAllByUser/${userId}`);
       setBlogs(response.data);
       // console.log(blogs)
     } catch (error) {
       console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,11 +126,11 @@ const Page = () => {
     fetchBlogs();
   }, [session]);
 
-  if (!blogs || blogs.length === 0) {
+  if (loading) {
     return (
       <div className="flex flex-col min-h-screen w-screen p-8 sm:min-h-screen">
         <Card className="h-full w-full sm:min-h-full animate-pulse flex items-center justify-center">
-          <LoadingSpinner/>
+          <LoadingSpinner />
         </Card>
       </div>
     );
@@ -153,9 +157,9 @@ const Page = () => {
           })}
         </div>
       ) : (
-        <Card className="h-full w-full animate-pulse flex items-center justify-center bg-background-300">
-          <div className="animate-pulse text-gray-1000 text-4xl p-4">
-            NO USER BLOGS FOUND, PUBLISH A BLOG? 
+        <Card className="h-full w-full  flex items-center justify-center bg-background-300">
+          <div className=" text-gray-1000 text-4xl p-4">
+            NO USER BLOGS FOUND, PUBLISH A BLOG?
           </div>
         </Card>
       )}

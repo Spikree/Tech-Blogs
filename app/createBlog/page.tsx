@@ -29,7 +29,7 @@ const Page = () => {
     }
     try {
       const response = await axios.post("/api/blog/new", {
-        user: await session.user.id,
+        user: session.user.id,
         title: title,
         content: content,
       });
