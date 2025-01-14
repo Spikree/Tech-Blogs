@@ -52,14 +52,14 @@ const Page = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen justify-center items-center sm:bg-gray-100">
+    <div className="flex h-screen w-screen justify-center items-center sm:bg-background-100">
       <form
         onSubmit={(e) => {
           createBlog(e);
         }}
       >
         <Card className="sm:p-10 p-5 flex flex-col gap-3 w-80 sm:w-600 mx-8">
-          <label className="text-gray-700">Blog Title</label>
+          <label className="text-primary-700">Blog Title</label>
           <Input
             value={title}
             onChange={(e) => {
@@ -68,7 +68,7 @@ const Page = () => {
             placeholder="Title"
           />
 
-          <label className="text-gray-700">write your blog here</label>
+          <label className="text-primary-700">write your blog here</label>
           <Textarea
             value={content}
             onChange={(e) => {

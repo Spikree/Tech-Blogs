@@ -133,7 +133,7 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-gray-100">
+    <div className="flex flex-col min-h-screen w-screen p-8 sm:bg-background-100">
       {blogs.length > 0 ? (
         <div className="flex flex-wrap gap-6 justify-center items-center">
           {blogs.map((blog, index) => {
@@ -153,7 +153,7 @@ const Page = () => {
           })}
         </div>
       ) : (
-        <Card className="h-full w-full animate-pulse flex items-center justify-center bg-gray-300">
+        <Card className="h-full w-full animate-pulse flex items-center justify-center bg-background-300">
           <div className="animate-pulse text-gray-1000 text-4xl p-4">
             NO USER BLOGS FOUND, PUBLISH A BLOG? 
           </div>

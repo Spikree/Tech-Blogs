@@ -73,7 +73,7 @@ const BlogCard = ({
               />
             </div>
           </div>
-          <p className="text-gray-500 cursor-pointer">{userName}</p>
+          <p className="text-primary-500 cursor-pointer">{userName}</p>
           <span className="text-sm text-gray-500 cursor-pointer">
             {formattedDate}
           </span>
@@ -103,14 +103,14 @@ const BlogCard = ({
                     : "w-4 h-4"
                 }
               />
-              <span>{blog.totalLikes}</span>
+              <span className="text-primary">{blog.totalLikes}</span>
             </Card>
             <Card
               onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
               className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>{blog.totalComments}</span>
+              <span className="text-primary">{blog.totalComments}</span>
             </Card>
           </div>
 
@@ -125,7 +125,7 @@ const BlogCard = ({
                 }}
                 className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
               >
-                <Trash className="w-4 h-4" />
+                <Trash className="w-4 h-4 text-primary" />
               </Card>
               <Card
                 onClick={() => {
@@ -137,7 +137,7 @@ const BlogCard = ({
                 }}
                 className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
               >
-                <Pencil className="w-4 h-4" />
+                <Pencil className="w-4 h-4 text-primary" />
               </Card>
             </div>
           )}
@@ -153,8 +153,8 @@ const BlogCard = ({
               <StickyNote
                 className={
                   blog.hasSaved
-                    ? "w-4 h-4 text-blue-600 fill-blue-100"
-                    : "w-h h-4"
+                    ? "w-4 h-4 text-primary-600 fill-blue-100 text-primary"
+                    : "w-h h-4 text-primary"
                 }
               />
             </Card>

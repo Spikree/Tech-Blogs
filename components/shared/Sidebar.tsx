@@ -4,6 +4,7 @@ import { Bookmark, Calendar, Home, Inbox, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 import {
   Sidebar,
@@ -13,20 +14,18 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "../ui/dropdown-menu";
-import {
-  DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "../ui/dropdown-menu";
+import { ModeToggle } from "../theme-toggle";
 
 const items = [
   {
@@ -65,15 +64,15 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton 
-                    asChild
-                    variant={pathname === item.url ? "outline" : "default"}
+                  <Link
+                    href={item.url}
+                    className={`flex items-center gap-2 p-2 rounded-md hover:bg-accent ${
+                      pathname === item.url ? "bg-accent" : ""
+                    }`}
                   >
-                    <a href={item.url} className="flex items-center gap-2">
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -81,38 +80,39 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="mb-10 sm:mb-15">
+        
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="flex gap-4 px-4 items-center text-center align-middle">
-              {image ? (
-                <Image
-                  src={image}
-                  width={30}
-                  height={30}
-                  alt="Picture of the author"
-                  className="rounded-full aspect-square object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-gray-300 rounded-full" />
-              )}
-              <p>{session?.user?.name}</p>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="px-8 py-4 my-4">
-            <DropdownMenuLabel>My account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Button
-                onClick={() => {
-                  signOut({
-                    callbackUrl: "/",
-                    redirect: true,
-                  });
-                }}
-              >
-                SignOut
-                <LogOut />
+          <div className="flex">
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="w-full justify-start px-4">
+                <div className="flex gap-4 items-center">
+                  {image ? (
+                    <Image
+                      src={image}
+                      width={30}
+                      height={30}
+                      alt="Profile picture"
+                      className="rounded-full aspect-square object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                  )}
+                  <p>{session?.user?.name}</p>
+                </div>
               </Button>
+            </DropdownMenuTrigger>
+            <div className="px-4">
+          <ModeToggle />
+        </div>
+          </div>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
