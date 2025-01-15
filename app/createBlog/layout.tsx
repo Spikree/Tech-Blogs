@@ -11,7 +11,7 @@ const conversationsLayout = ({ children }: Props) => {
         <AppSidebar />
 
         <Card className="p-4 mt-5 mx-5 flex items-center sm:hidden">
-          <SidebarTrigger className="block sm:hidden" />
+          <SidebarTrigger className="block sm:hidden" /> <h1 className="text-2xl">Create Blog</h1>
         </Card>
 
         {children}

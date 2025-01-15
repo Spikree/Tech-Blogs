@@ -14,6 +14,7 @@ import { Heart, Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 type Comment = {
   id: string;
@@ -48,16 +49,20 @@ export default function Page() {
   const { data: session } = useSession();
   const user : string =   session?.user?.id ?? ''
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
   
 
   const getBlog = useCallback(async () => {
+    setLoading(true)
     try {
       const response = await axios.get(`/api/blog/get/${id}`);
       setBlog(response.data);
       console.log(response.data)
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false)
     }
   },[id]);
 
@@ -100,19 +105,18 @@ export default function Page() {
       })
     : null;
 
-  if (!blog)
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-pulse text-gray-500 text-4xl">Loading...</div>
-      </div>
-    );
+    if(loading) {
+      return <LoadingSpinner/>
+    }
+ 
 
   return (
-    <Card className="w-full p-10 mx-auto mb-6 hover:shadow-lg transition-shadow">
+    <div>
+    {blog && <Card className="w-full p-10 mx-auto mb-6 hover:shadow-lg transition-shadow">
       <CardHeader>
         <div className="flex justify-between items-center mb-2 flex-wrap">
           <CardTitle className="text-2xl font-bold">{blog.title}</CardTitle>
-          <div className="text-sm text-muted-foreground">Author : {blog.username} </div>
+          <div className="text-sm text-primary">Author : {blog.username} </div>
         </div>
         <div className="text-sm text-muted-foreground">
           <span className="font-medium">{readableDate}</span>
@@ -122,7 +126,7 @@ export default function Page() {
       <CardContent>
         <div className="prose prose-slate">
           {blog.content?.split("\n").map((paragraph, index) => (
-            <p key={index} className="mb-4 text-gray-700 leading-relaxed">
+            <p key={index} className="mb-4 text-primary leading-relaxed">
               {paragraph}
             </p>
           ))}
@@ -156,12 +160,12 @@ export default function Page() {
 
         <Send
           onClick={() => handleCommentSubmission(comment)}
-          className="cursor-pointer text-gray-600 hover:text-gray-800"
+          className="cursor-pointer text-primary hover:text-gray-800"
         />
       </Card>
 
-      <Card className="w-full bg-white p-6 mt-10">
-        <h3 className="text-xl font-semibold mb-6 text-gray-800">
+      <Card className="w-full bg-background p-6 mt-10">
+        <h3 className="text-xl font-semibold mb-6 text-primary">
           Comments ({blog.comments.length})
         </h3>
         {blog.comments.length > 0 ? (
@@ -169,17 +173,17 @@ export default function Page() {
             {blog.comments.map((comment, index) => (
               <div
                 key={index}
-                className="border-b border-gray-100 last:border-0 pb-4 last:pb-0"
+                className="border-b border-foreground-100 last:border-0 pb-4 last:pb-0"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="w-8 h-8 rounded-full bg-secondary text-primary flex items-center justify-center">
                     {comment.user.username[0].toUpperCase()}
                   </span>
-                  <p className="font-medium text-sm text-gray-800">
+                  <p className="font-medium text-sm text-primary">
                     {comment.user.username}
                   </p>
                 </div>
-                <p className="text-gray-700 pl-10">{comment.comment}</p>
+                <p className="text-primary pl-10">{comment.comment}</p>
               </div>
             ))}
           </div>
@@ -189,6 +193,7 @@ export default function Page() {
           </p>
         )}
       </Card>
-    </Card>
+    </Card>}
+    </div>
   );
 }
