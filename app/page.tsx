@@ -37,7 +37,11 @@ export default function Home() {
         window.location.assign("/home");
         return;
       }
-      setError(register ? "Couldn’t create this account. If you already have one, sign in instead." : "Couldn’t sign in. Check your email and password.");
+      if (register && result?.error === "SignupUnavailable") {
+        setError("Account creation is temporarily unavailable. Please try again later.");
+      } else {
+        setError(register ? "Couldn’t create this account. If you already have one, sign in instead." : "Couldn’t sign in. Check your email and password.");
+      }
     } catch {
       setError("Can’t reach the sign-in service. Please try again.");
     } finally {

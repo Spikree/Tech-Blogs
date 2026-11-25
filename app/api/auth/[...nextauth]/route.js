@@ -17,28 +17,38 @@ const handler = NextAuth({
                 const { email, password } = credentials ?? {};
                 if (typeof email !== "string" || !email.trim() || typeof password !== "string" || !password || Buffer.byteLength(password) > 72) return null;
 
-                await connectToDb();
                 if (credentials.intent === "register") {
                     const normalized = email.trim().toLowerCase();
-                  if (normalized.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized) || password.length < 12) return null;
-                    // If Mongoose is building the email index, wait for it to finish.
-                    // This does not look up the email from this signup.
-                    await User.init();
+                    if (normalized.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized) || password.length < 12) return null;
+
+                    let stage = "connect";
                     try {
-                        // When saving, MongoDB checks the new email against the index.
-                        // If another user already has that email, MongoDB refuses to save this user.
+                        await connectToDb();
+                        // Wait for the email index if Mongoose is building it.
+                        stage = "index";
+                        await User.init();
+                        stage = "hash";
+                        const passwordHash = await bcrypt.hash(password, 12);
+                        // MongoDB checks for duplicate emails when it saves the new user.
+                        stage = "insert";
                         const user = await User.create({
                             email: normalized,
                             username: normalized.split("@")[0],
-                            passwordHash: await bcrypt.hash(password, 12),
+                            passwordHash,
                         });
                         return { id: user.id, email: user.email, name: user.username };
                     } catch (error) {
-                        // MongoDB already rejected the duplicate. Code 11000 is how we recognize that error.
-                        if (error.code === 11000) return null;
-                        throw error;
+                        console.error("[signup] failed", {
+                            stage,
+                            name: error.name,
+                            code: error.code,
+                            duplicateFields: error.code === 11000 ? Object.keys(error.keyPattern ?? {}) : undefined,
+                        });
+                        if (stage === "insert" && error.code === 11000 && error.keyPattern?.email) return null;
+                        throw new Error("SignupUnavailable");
                     }
                 }
+              await connectToDb();
               const user = await User.findOne({ email: email.trim().toLowerCase() }).select("+passwordHash");
               if (!user) return null;
               if (!user?.passwordHash || !await bcrypt.compare(password, user.passwordHash)) return null;
