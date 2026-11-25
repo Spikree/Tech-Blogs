@@ -1,14 +1,15 @@
-import {connectToDb} from "../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Comment from "../../../../../models/comment.js"
 
 export const DELETE = async(req,{params}) => {
     const {commentId} = await params
 
     try {
-        await connectToDb()
-        const comment = await Comment.findByIdAndDelete(commentId)
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        const comment = await Comment.findOneAndDelete({ _id: commentId, user: access.userId })
         if(!comment) {
-            return new Response("Comment not found")
+            return new Response("Comment not found", { status: 404 })
         }
 
         return new Response(JSON.stringify({message: "Comment deleted sucessfully",comment},comment))

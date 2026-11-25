@@ -1,12 +1,13 @@
-import {connectToDb} from "../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Blog from "../../../../../models/blog.js";
 
 export const DELETE = async (req, { params }) => {
     try {
-      await connectToDb();
+      const access = await requireWriteAccess(req);
+      if (access.error) return access.error;
       const { id } = await params;
   
-      const deletedBlog = await Blog.findByIdAndDelete(id);
+      const deletedBlog = await Blog.findOneAndDelete({ _id: id, user: access.userId });
   
       if (!deletedBlog) {
         return new Response("Blog not found", { status: 404 });

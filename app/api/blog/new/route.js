@@ -1,16 +1,17 @@
-import {connectToDb} from "../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Blog from "../../../../models/blog.js"
 
 export const POST = async (req) => {
-    const {user, title, content} = await req.json();
+    const {title, content} = await req.json();
 
-    if(!user || !title || !content) {
+    if(!title || !content) {
         return new Response("Missing required fields",{status:400})
     }
 
     try {
-        await connectToDb();
-        const newBlog = new Blog({user: user, title: title, content: content})
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        const newBlog = new Blog({user: access.userId, title: title, content: content})
 
         await newBlog.save();
 

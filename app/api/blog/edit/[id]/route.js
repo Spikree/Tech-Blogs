@@ -1,4 +1,4 @@
-import {connectToDb} from "../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Blog from "../../../../../models/blog.js"
 
 export const PATCH = async(req,{params}) => {
@@ -7,11 +7,12 @@ export const PATCH = async(req,{params}) => {
     const {id} = await params
 
     try {
-        await connectToDb();
-        const blog = await Blog.findById(id)
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        const blog = await Blog.findOne({ _id: id, user: access.userId })
 
         if(!blog) {
-            return new Response("Blog not found", {status:400})
+            return new Response("Blog not found", {status:404})
         }
 
         blog.title = title;

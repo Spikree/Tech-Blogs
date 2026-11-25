@@ -1,4 +1,4 @@
-import {connectToDb} from "../../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Like from "../../../../../../models/likes.js"
 import Blog from "../../../../../../models/blog.js"
 
@@ -6,7 +6,9 @@ export const PUT = async(req,{params}) => {
     const {blogId, userId} = await params;
 
     try {
-        await connectToDb()
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        if (userId !== access.userId) return new Response("Forbidden", { status: 403 });
 
         const blog = await Blog.findById(blogId);
 
@@ -20,7 +22,7 @@ export const PUT = async(req,{params}) => {
         })
 
         if(existingLike) {
-            await Like.findOneAndDelete(existingLike._id)
+            await Like.findByIdAndDelete(existingLike._id)
             return new Response(JSON.stringify({
                 message: "Like removed",
                 liked: false,
@@ -47,6 +49,6 @@ export const PUT = async(req,{params}) => {
 
     } catch (error) {
         console.log(error)
-        return new Response("Error while liking the blog")
+        return new Response("Error while liking the blog", { status: 500 })
     }
 }

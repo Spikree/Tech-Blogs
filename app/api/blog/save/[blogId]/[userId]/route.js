@@ -1,4 +1,4 @@
-import {connectToDb} from "../../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Blog from "../../../../../../models/blog.js"
 import Save from "../../../../../../models/save.js"
 
@@ -6,7 +6,9 @@ export const PUT = async(req, {params}) => {
     const {blogId, userId} = await params;
 
     try {
-        await connectToDb()
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        if (userId !== access.userId) return new Response("Forbidden", { status: 403 });
 
         const blog = await Blog.findById(blogId);
 

@@ -1,4 +1,4 @@
-import {connectToDb} from "../../../../../../utils/database.js"
+import { requireWriteAccess } from "@/lib/write-access";
 import Blog from "../../../../../../models/blog.js"
 import Comment from "../../../../../../models/comment.js"
 
@@ -7,7 +7,9 @@ export const POST = async(req,{params}) => {
     const { comment } = await req.json();
 
     try {
-        await connectToDb();
+        const access = await requireWriteAccess(req);
+        if (access.error) return access.error;
+        if (userId !== access.userId) return new Response("Forbidden", { status: 403 });
 
         if(!comment || comment.trim().length === 0) {
             return new Response(JSON.stringify({message: "comment cannot be empty"}))
@@ -26,7 +28,7 @@ export const POST = async(req,{params}) => {
         })
 
         await newComment.save();
-        
+
 
         return new Response(JSON.stringify({newComment, message: "Comment posted successfully"} ),{status:200})
 
