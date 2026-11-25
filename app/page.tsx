@@ -21,7 +21,6 @@ export default function Home() {
     event.preventDefault();
     if (busy) return;
     const data = new FormData(event.currentTarget);
-    console.log(data)
     const password = String(data.get("password"));
     setError("");
     if (register && new TextEncoder().encode(password).length > 72) {

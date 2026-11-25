@@ -33,6 +33,12 @@ NEXTAUTH_SECRET=
 ```
 To get your google auth provider go to (https://console.cloud.google.com/)
 
+## Testing email and password sign-in
+
+On `/`, choose **Create account** and enter an unused email and a password of at least 12 characters (maximum 72 UTF-8 bytes). Registration signs you in and redirects to `/home`. Use **Sign in** for subsequent visits. Google and password accounts are not automatically linked.
+
+Registration relies on the unique, case-insensitive `users.email` index declared in `models/user.js`. Resolve any existing duplicate emails before deploying. If automatic index creation is disabled, create the index before enabling sign-up: `db.users.createIndex({ email: 1 }, { unique: true, collation: { locale: 'en', strength: 2 } })`.
+
 ## Troubleshooting
 
 1. Port Already in Use: Kill the process running on the port or change the port in package.json.
