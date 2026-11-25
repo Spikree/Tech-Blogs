@@ -39,6 +39,8 @@ export default function Home() {
       }
       if (register && result?.error === "SignupUnavailable") {
         setError("Account creation is temporarily unavailable. Please try again later.");
+      } else if (!register && result?.error === "SignInUnavailable") {
+        setError("Sign-in is temporarily unavailable. Please try again later.");
       } else {
         setError(register ? "Couldn’t create this account. If you already have one, sign in instead." : "Couldn’t sign in. Check your email and password.");
       }

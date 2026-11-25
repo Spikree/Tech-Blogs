@@ -48,11 +48,21 @@ const handler = NextAuth({
                         throw new Error("SignupUnavailable");
                     }
                 }
-              await connectToDb();
-              const user = await User.findOne({ email: email.trim().toLowerCase() }).select("+passwordHash");
-              if (!user) return null;
-              if (!user?.passwordHash || !await bcrypt.compare(password, user.passwordHash)) return null;
-              return { id: user.id, email: user.email, name: user.username, image: user.image };
+                let stage = "connect";
+                try {
+                    await connectToDb();
+                    stage = "lookup";
+                    const user = await User.findOne({ email: email.trim().toLowerCase() })
+                        .collation({ locale: "en", strength: 2 })
+                        .select("+passwordHash");
+                    if (!user?.passwordHash) return null;
+                    stage = "verify";
+                    if (!(await bcrypt.compare(password, user.passwordHash))) return null;
+                    return { id: user.id, email: user.email, name: user.username, image: user.image };
+                } catch (error) {
+                    console.error("[credentials] sign-in failed", { stage, name: error.name, code: error.code });
+                    throw new Error("SignInUnavailable");
+                }
             },
         }),
         GoogleProvider({
