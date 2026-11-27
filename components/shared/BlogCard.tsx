@@ -1,163 +1,116 @@
 "use client";
 
-import React from "react";
-import { Dispatch, SetStateAction } from "react";
+import Link from "next/link";
+import { Bookmark, Heart, MessageCircle, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Card } from "../ui/card";
-import { Heart, MessageCircle, Pencil, StickyNote, Trash } from "lucide-react";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import UserAvatar from "./UserAvatar";
+import { cn } from "@/lib/utils";
+import { formatDate, readingTime } from "@/lib/format";
+import type { Blog } from "@/types/blog";
 
 type Props = {
-  blog: {
-    title: string;
-    content: string;
-    postedOn: string;
-    user: string;
-    _id: string;
-    hasLiked: boolean;
-    hasSaved: boolean;
-    userImage: string;
-    totalLikes: number;
-    totalComments: number;
-  };
-  userName: string;
-  setShowDeleteModal?: Dispatch<SetStateAction<boolean>>;
-  setDeleteId?: (value: string) => void;
-  setShowEditModal?: Dispatch<SetStateAction<boolean>>;
-  setEditId?: (value: string) => void;
-  getSingleBlog?: (value: string) => void;
-  likeBlogs: (blogId: string, userId: string) => void;
-  saveBlogs?: (blogId: string, userId: string) => void;
+  blog: Blog;
+  authorName?: string;
+  authorImage?: string | null;
+  onLike: (blog: Blog) => void;
+  onSave?: (blog: Blog) => void;
+  onEdit?: (blog: Blog) => void;
+  onDelete?: (blog: Blog) => void;
 };
 
-const BlogCard = ({
-  blog,
-  userName,
-  setShowDeleteModal,
-  setDeleteId,
-  setShowEditModal,
-  setEditId,
-  getSingleBlog,
-  likeBlogs,
-  saveBlogs,
-}: Props) => {
-  const { data: session } = useSession();
-  const formattedDate = new Date(blog.postedOn).toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const pathname = usePathname();
-  const router = useRouter();
-  const image: string = blog.userImage;
+const BlogCard = ({ blog, authorName, authorImage, onLike, onSave, onEdit, onDelete }: Props) => {
+  const href = `/blog/${blog._id}`;
+  const author = authorName ?? blog.username ?? "Unknown author";
 
   return (
-    <Card className="p-5 w-96">
-      <div className="flex flex-col gap-4">
-        <div className="max-h-max">
-          <div className="flex justify-between">
-            <h1
-              onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
-              className="text-2xl font-bold cursor-pointer"
-            >
-              {blog.title}
-            </h1>
-            <div className="w-20 h-20 p-3">
-              <Image
-                src={image}
-                width={30}
-                height={30}
-                alt="Picture of the author"
-                className="rounded-full aspect-square cursor-pointer object-cover"
-              />
-            </div>
-          </div>
-          <p className="text-primary-500 cursor-pointer">{userName}</p>
-          <span className="text-sm text-gray-500 cursor-pointer">
-            {formattedDate}
-          </span>
+    <Card className="group relative flex h-full flex-col p-5 shadow-none transition-colors hover:border-foreground/25 has-[a[data-card-link]:focus-visible]:ring-2 has-[a[data-card-link]:focus-visible]:ring-ring">
+      <div className="flex items-center gap-3">
+        <UserAvatar name={author} image={authorImage ?? blog.userImage} />
+        <div className="min-w-0 text-sm leading-tight">
+          <p className="truncate font-medium">{author}</p>
+          <p className="mt-0.5 flex gap-2 text-muted-foreground">
+            <time dateTime={blog.postedOn}>{formatDate(blog.postedOn)}</time>
+            <span aria-hidden>·</span>
+            <span>{readingTime(blog.content)} min read</span>
+          </p>
         </div>
-        <p
-          className="cursor-pointer"
-          onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
-        >
-          {blog?.content?.length > 200
-            ? `${blog.content.slice(0, 200)}...`
-            : blog.content}
-        </p>
-        <div className="flex justify-between">
-          <div className="flex gap-3 mt-auto">
-            <Card
-              onClick={() => {
-                if (session?.user?.id) {
-                  likeBlogs(blog._id, session.user.id);
-                }
-              }}
-              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
-            >
-              <Heart
-                className={
-                  blog.hasLiked
-                    ? "w-4 h-4 text-red-600 fill-red-600"
-                    : "w-4 h-4"
-                }
-              />
-              <span className="text-primary">{blog.totalLikes}</span>
-            </Card>
-            <Card
-              onClick={() => blog._id && router.push(`/blog/${blog._id}`)}
-              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span className="text-primary">{blog.totalComments}</span>
-            </Card>
-          </div>
+      </div>
 
-          {pathname === "/yourBlogs" && (
-            <div className="flex gap-1 mt-auto">
-              <Card
-                onClick={() => {
-                  if (setShowDeleteModal && setDeleteId) {
-                    setShowDeleteModal(true);
-                    setDeleteId(blog._id);
-                  }
-                }}
-                className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-red-500 cursor-pointer"
-              >
-                <Trash className="w-4 h-4 text-primary" />
-              </Card>
-              <Card
-                onClick={() => {
-                  if (setShowEditModal && setEditId && getSingleBlog) {
-                    setShowEditModal(true);
-                    setEditId(blog._id);
-                    getSingleBlog(blog._id);
-                  }
-                }}
-                className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
-              >
-                <Pencil className="w-4 h-4 text-primary" />
-              </Card>
-            </div>
-          )}
-          {(pathname === "/home" || pathname === "/savedBlogs") && (
-            <Card
-              onClick={() => {
-                if (session?.user?.id && saveBlogs) {
-                  saveBlogs(blog._id, session?.user.id);
-                }
-              }}
-              className="px-3 py-2 flex items-center gap-1 text-gray-600 hover:text-blue-500 cursor-pointer"
+      <Link
+        href={href}
+        data-card-link
+        className="mt-4 block focus-visible:outline-none after:absolute after:inset-0 after:rounded-xl after:content-['']"
+      >
+        <h2 className="line-clamp-2 text-lg font-semibold leading-snug tracking-tight underline-offset-4 group-hover:underline">
+          {blog.title}
+        </h2>
+      </Link>
+      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">{blog.content}</p>
+
+      <div className="relative z-10 -mx-2 mt-auto flex items-center gap-1 pt-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-pressed={blog.hasLiked}
+          aria-label={blog.hasLiked ? "Unlike" : "Like"}
+          onClick={() => onLike(blog)}
+          className={cn("gap-1.5 px-2 text-muted-foreground", blog.hasLiked && "text-foreground")}
+        >
+          <Heart className={cn(blog.hasLiked && "fill-red-500 text-red-500")} />
+          <span className="tabular-nums">{blog.totalLikes}</span>
+        </Button>
+        <Button asChild variant="ghost" size="sm" className="gap-1.5 px-2 text-muted-foreground">
+          <Link href={`${href}#comments`} aria-label={`${blog.totalComments} comments`}>
+            <MessageCircle />
+            <span className="tabular-nums">{blog.totalComments}</span>
+          </Link>
+        </Button>
+
+        <div className="ml-auto flex items-center">
+          {onSave && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-pressed={!!blog.hasSaved}
+              aria-label={blog.hasSaved ? "Remove from Saved" : "Save for later"}
+              title={blog.hasSaved ? "Remove from Saved" : "Save for later"}
+              onClick={() => onSave(blog)}
+              className={cn("size-8 text-muted-foreground", blog.hasSaved && "text-foreground")}
             >
-              <StickyNote
-                className={
-                  blog.hasSaved
-                    ? "w-4 h-4 text-primary-600 fill-blue-100 text-primary"
-                    : "w-h h-4 text-primary"
-                }
-              />
-            </Card>
+              <Bookmark className={cn(blog.hasSaved && "fill-current")} />
+            </Button>
+          )}
+          {(onEdit || onDelete) && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="More actions" className="size-8 text-muted-foreground">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                {onEdit && (
+                  <DropdownMenuItem onClick={() => onEdit(blog)}>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
+                )}
+                {onEdit && onDelete && <DropdownMenuSeparator />}
+                {onDelete && (
+                  <DropdownMenuItem onClick={() => onDelete(blog)} className="text-destructive focus:text-destructive">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>

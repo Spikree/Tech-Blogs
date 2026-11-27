@@ -1,8 +1,7 @@
 "use client";
 
-import { Bookmark, Calendar, Home, Inbox, LogOut } from "lucide-react";
+import { Bookmark, ChevronsUpDown, FileText, Home, LogOut, Newspaper, PenLine } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -12,11 +11,12 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,97 +25,80 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { ModeToggle } from "../theme-toggle";
+import UserAvatar from "./UserAvatar";
 
 const items = [
-  {
-    title: "Home",
-    url: "/home",
-    icon: Home,
-  },
-  {
-    title: "Add Blogs",
-    url: "/createBlog",
-    icon: Inbox,
-  },
-  {
-    title: "Your Blogs",
-    url: "/yourBlogs",
-    icon: Calendar,
-  },
-  {
-    title: "Saved Blogs",
-    url: "/savedBlogs",
-    icon: Bookmark,
-  },
+  { title: "Home", url: "/home", icon: Home },
+  { title: "Write", url: "/createBlog", icon: PenLine },
+  { title: "Your blogs", url: "/yourBlogs", icon: FileText },
+  { title: "Saved", url: "/savedBlogs", icon: Bookmark },
 ];
 
 export function AppSidebar() {
   const { data: session } = useSession();
-  const image: string = session?.user?.image ?? "";
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+  const close = () => setOpenMobile(false);
+  const name = session?.user?.name ?? "";
+  const email = session?.user?.email ?? "";
 
   return (
     <Sidebar>
+      <SidebarHeader>
+        <Link href="/home" onClick={close} className="flex items-center gap-2 rounded-md px-2 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+          <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <Newspaper className="size-4" />
+          </span>
+          <span className="font-semibold tracking-tight">Tech Blogs</span>
+        </Link>
+      </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Tech Blogs</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <Link
-                    href={item.url}
-                    className={`flex items-center gap-2 p-2 rounded-md hover:bg-accent ${
-                      pathname === item.url ? "bg-accent" : ""
-                    }`}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                  </Link>
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
+                    <Link href={item.url} onClick={close}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="mb-10 sm:mb-15">
-        
-        <DropdownMenu>
-          <div className="flex">
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="w-full justify-start px-4">
-                <div className="flex gap-4 items-center">
-                  {image ? (
-                    <Image
-                      src={image}
-                      width={30}
-                      height={30}
-                      alt="Profile picture"
-                      className="rounded-full aspect-square object-cover"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                  )}
-                  <p>{session?.user?.name}</p>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <div className="px-4">
-          <ModeToggle />
-        </div>
-          </div>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => signOut({ callbackUrl: "/", redirect: true })}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent">
+                  <UserAvatar name={name} image={session?.user?.image} size="sm" />
+                  <span className="grid flex-1 text-left leading-tight">
+                    <span className="truncate font-medium">{name || "Account"}</span>
+                    {email && <span className="truncate text-xs text-muted-foreground">{email}</span>}
+                  </span>
+                  <ChevronsUpDown className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="start" className="w-[--radix-dropdown-menu-trigger-width] min-w-56">
+                <DropdownMenuLabel className="font-normal text-muted-foreground">
+                  Signed in as {name || email}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/", redirect: true })}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

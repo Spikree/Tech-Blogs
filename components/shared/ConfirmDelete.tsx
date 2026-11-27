@@ -1,25 +1,57 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import { Card } from '../ui/card'
-import { Button } from '../ui/button'
+"use client";
+
+import { useRef, useState } from "react";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 type Props = {
-    setShowDeleteModal:Dispatch<SetStateAction<boolean>>;
-    deleteId: string;
-    deleteBlog: (value: string) => void;
-}
+  title: string | null;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => Promise<void>;
+};
 
-const ConfirmDelete = ({setShowDeleteModal,deleteBlog,deleteId}: Props) => {
+const ConfirmDelete = ({ title, onOpenChange, onConfirm }: Props) => {
+  const [busy, setBusy] = useState(false);
+  // Keep showing the last title while the dialog animates closed.
+  const lastTitle = useRef(title);
+  if (title !== null) lastTitle.current = title;
+
+  async function confirm() {
+    setBusy(true);
+    try {
+      await onConfirm();
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <Card className='p-10 flex flex-col gap-3'>
-            <h1 className='text-2xl'>Do you want to delete this blog?</h1>
-            <div className='flex gap-2'>
-                <Button onClick={() => {deleteBlog(deleteId)}} variant="destructive">Delete</Button>
-                <Button onClick={() => {setShowDeleteModal(prev => !prev)}}>Cancel</Button>
-            </div>
-        </Card>
-    </div>
-  )
-}
+    <Dialog open={title !== null} onOpenChange={(open) => !busy && onOpenChange(open)}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Delete this blog?</DialogTitle>
+          <DialogDescription>
+            “{lastTitle.current}” will be permanently deleted. This can’t be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" disabled={busy} onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" disabled={busy} onClick={confirm}>
+            {busy ? "Deleting…" : "Delete"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
-export default ConfirmDelete
+export default ConfirmDelete;

@@ -9,8 +9,8 @@ export default {
   ],
   theme: {
   	extend: {
-		width: {
-			'600':'600px'
+		fontFamily: {
+			sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
 		},
   		colors: {
   			background: 'hsl(var(--background))',

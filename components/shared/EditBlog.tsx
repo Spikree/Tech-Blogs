@@ -1,42 +1,85 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { Card } from "../ui/card";
+"use client";
+
+import { type FormEvent, useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { X } from "lucide-react";
+import { Label } from "../ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import type { Blog } from "@/types/blog";
 
 type Props = {
-    setShowEditModal: Dispatch<SetStateAction<boolean>>;
-    titleToEdit: string;
-    contentToEdit: string;
-    setTitleToEdit: (value : string) => void;
-    setContentToEdit: (value : string) => void;
-    editBlog: (blogId: string) => Promise<void>
-    editId: string;
+  blog: Blog | null;
+  onOpenChange: (open: boolean) => void;
+  onSave: (changes: { title: string; content: string }) => Promise<void>;
 };
 
-const EditBlog = ({setShowEditModal,titleToEdit,contentToEdit,setTitleToEdit,setContentToEdit,editBlog,editId}: Props) => {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <Card className="p-10 flex flex-col gap-3 w-96 sm:w-600 mx-8 bg-gray-100">
-        <div className="flex text-center justify-between align-middle">
-            <h1 className="text-2xl font-bold">Edit Blog</h1>
-            <X onClick={() => {setShowEditModal(prev => !prev)}}/>
-        </div>
-        <div className="flex flex-col gap-5 ">
-            <div className="flex flex-col gap-2">
-            <label className="text-gray-600">Title</label>
-            <Input onChange={(e) => setTitleToEdit(e.target.value)} value={titleToEdit} />
-            </div>
+const EditBlog = ({ blog, onOpenChange, onSave }: Props) => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [busy, setBusy] = useState(false);
 
-            <div className="flex flex-col gap-2">
-            <label className="text-gray-600">Content</label>
-            <Textarea onChange={(e) => setContentToEdit(e.target.value)} value={contentToEdit} className="w-full h-96 sm:h-96"/>
-            </div>
-        </div>
-        <Button onClick={() => {editBlog(editId)}} className="">Submit</Button>
-      </Card>
-    </div>
+  useEffect(() => {
+    if (blog) {
+      setTitle(blog.title);
+      setContent(blog.content);
+    }
+  }, [blog]);
+
+  const unchanged = blog ? title === blog.title && content === blog.content : true;
+  const invalid = !title.trim() || !content.trim();
+
+  async function submit(event: FormEvent) {
+    event.preventDefault();
+    if (unchanged || invalid) return;
+    setBusy(true);
+    try {
+      await onSave({ title: title.trim(), content });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Dialog open={blog !== null} onOpenChange={(open) => !busy && onOpenChange(open)}>
+      <DialogContent className="max-w-2xl">
+        <form onSubmit={submit} className="grid gap-5">
+          <DialogHeader>
+            <DialogTitle>Edit blog</DialogTitle>
+            <DialogDescription>Changes are visible to everyone as soon as you save.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-2">
+            <Label htmlFor="edit-title">Title</Label>
+            <Input id="edit-title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="edit-content">Content</Label>
+            <Textarea
+              id="edit-content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="min-h-72 leading-7"
+              required
+            />
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" disabled={busy} onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={busy || unchanged || invalid}>
+              {busy ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
