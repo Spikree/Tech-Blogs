@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, ChevronsUpDown, FileText, Home, LogOut, Newspaper, PenLine } from "lucide-react";
+import { Bookmark, ChevronsUpDown, FileText, Home, LogOut, PenLine } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -46,9 +46,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link href="/home" onClick={close} className="flex items-center gap-2 rounded-md px-2 py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
-          <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <Newspaper className="size-4" />
-          </span>
+
           <span className="font-semibold tracking-tight">Tech Blogs</span>
         </Link>
       </SidebarHeader>

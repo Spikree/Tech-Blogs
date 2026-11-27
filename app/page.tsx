@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Newspaper } from "lucide-react";
+
 import { getProviders, signIn } from "next-auth/react";
 import { type FormEvent, useEffect, useState } from "react";
 
@@ -60,12 +60,7 @@ export default function Home() {
     <main className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm space-y-5 p-6 shadow-none">
         <header>
-          <p className="mb-4 flex items-center gap-2 text-sm font-medium">
-            <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <Newspaper className="size-4" />
-            </span>
-            Tech Blogs
-          </p>
+          <p className="mb-4 text-sm font-medium">Tech Blogs</p>
           <h1 className="text-2xl font-semibold">{title}</h1>
         </header>
         <form className="space-y-4" onSubmit={submit}>
